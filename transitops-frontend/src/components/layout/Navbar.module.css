@@ -21,6 +21,10 @@
   transition: left var(--transition-normal);
 }
 
+.navbar.collapsed {
+  left: var(--sidebar-collapsed-width);
+}
+
 /* ---- Left side ---- */
 .left {
   display: flex;

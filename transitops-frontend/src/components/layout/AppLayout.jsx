@@ -67,6 +67,7 @@ const AppLayout = () => {
       <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} isMobile={isMobile} />
       <div className={styles.main}>
         <Navbar 
+          collapsed={sidebarCollapsed}
           onMenuToggle={toggleSidebar}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}

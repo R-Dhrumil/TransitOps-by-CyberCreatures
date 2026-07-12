@@ -33,7 +33,7 @@ const Sidebar = ({ collapsed, onToggle, isMobile }) => {
     <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
       <div className={styles.brand}>
         {collapsed && !isMobile ? (
-          <span className={styles.logo}><AppIcon name="bus" size={22} /></span>
+          <img src="/favicon.svg" alt="T" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 'var(--space-2)' }} />
         ) : (
           <img src="/logo.svg" alt="TransitOps" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         )}

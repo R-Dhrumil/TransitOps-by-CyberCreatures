@@ -17,7 +17,7 @@ const PAGE_TITLES = {
   '/reports': 'Reports & Analytics',
 };
 
-const Navbar = ({ onMenuToggle, searchQuery, onSearchChange }) => {
+const Navbar = ({ onMenuToggle, searchQuery, onSearchChange, collapsed }) => {
   const { user } = useAuth();
   const location = useLocation();
   const [showNotifications, setShowNotifications] = useState(false);
@@ -37,7 +37,7 @@ const Navbar = ({ onMenuToggle, searchQuery, onSearchChange }) => {
   const title = PAGE_TITLES[location.pathname] || 'TransitOps';
 
   return (
-    <header className={styles.navbar}>
+    <header className={`${styles.navbar} ${collapsed ? styles.collapsed : ''}`}>
       {/* Left — Search bar */}
       <div className={styles.left}>
         <button className={styles.menuBtn} onClick={onMenuToggle} aria-label="Toggle menu">
