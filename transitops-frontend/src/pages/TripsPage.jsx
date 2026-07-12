@@ -31,6 +31,7 @@ const TripsPage = () => {
 
   const [submitting, setSubmitting] = useState(false);
   const [boardFilter, setBoardFilter] = useState('Active'); // Active or All
+  const [selectedTrip, setSelectedTrip] = useState(null);
 
   const canCreate = hasRole('driver', 'fleet_manager', 'dispatcher');
 
@@ -285,7 +286,12 @@ const TripsPage = () => {
             }
 
             return (
-              <div key={trip.id} className={styles.dispatchCard}>
+              <div 
+                key={trip.id} 
+                className={styles.dispatchCard} 
+                onClick={() => setSelectedTrip(trip)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className={styles.cardTop}>
                   <div className={styles.cardInfo}>
                     <div className={styles.truckIconWrapper}>
@@ -320,6 +326,56 @@ const TripsPage = () => {
           })}
         </div>
       </div>
+
+      {/* Trip Details Modal */}
+      {selectedTrip && (
+        <div className="modal-overlay" onClick={() => setSelectedTrip(null)} style={{ zIndex: 1000 }}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', width: '100%' }}>
+            <div className="modal-header">
+              <h3>Trip Details — {selectedTrip.trip_number || selectedTrip.id.split('-')[0].toUpperCase()}</h3>
+              <button className="modal-close" onClick={() => setSelectedTrip(null)}>✕</button>
+            </div>
+            <div className="modal-body" style={{ padding: 'var(--space-5)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Status</span>
+                <div style={{ fontWeight: '500', color: 'var(--color-text-primary)' }}>{selectedTrip.status || 'Draft'}</div>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Vehicle</span>
+                <div style={{ fontWeight: '500', color: 'var(--color-text-primary)' }}>{selectedTrip.registration_number || selectedTrip.name_model || 'Unassigned'}</div>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Driver</span>
+                <div style={{ fontWeight: '500', color: 'var(--color-text-primary)' }}>{selectedTrip.driver_name || 'Unassigned'}</div>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Cargo Weight</span>
+                <div style={{ fontWeight: '500', color: 'var(--color-text-primary)' }}>{selectedTrip.cargo_weight || '0'} lbs</div>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Planned Distance</span>
+                <div style={{ fontWeight: '500', color: 'var(--color-text-primary)' }}>{selectedTrip.planned_distance || '0'} mi</div>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Final Odometer</span>
+                <div style={{ fontWeight: '500', color: 'var(--color-text-primary)' }}>{selectedTrip.final_odometer || '—'}</div>
+              </div>
+              <div style={{ gridColumn: '1 / -1', borderTop: '1px solid var(--color-border-light)', paddingTop: 'var(--space-4)', marginTop: 'var(--space-2)' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Route</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
+                  <div style={{ flex: 1, padding: 'var(--space-3)', background: 'var(--color-bg-primary)', borderRadius: 'var(--radius-md)' }}>
+                    {selectedTrip.source}
+                  </div>
+                  <AppIcon name="arrowRight" size={16} color="var(--color-text-muted)" />
+                  <div style={{ flex: 1, padding: 'var(--space-3)', background: 'var(--color-bg-primary)', borderRadius: 'var(--radius-md)' }}>
+                    {selectedTrip.destination}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
