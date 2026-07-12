@@ -44,6 +44,14 @@
   display: none;
 }
 
+.mobileBrand {
+  display: none;
+}
+.mobileBrand img {
+  height: 24px;
+  object-fit: contain;
+}
+
 .menuBtn:hover {
   background: var(--color-bg-hover);
   color: var(--color-text-primary);
@@ -211,6 +219,12 @@
 
   .menuBtn {
     display: flex;
+  }
+
+  .mobileBrand {
+    display: flex;
+    align-items: center;
+    margin-left: var(--space-2);
   }
 
   .searchWrapper {

@@ -44,6 +44,10 @@ const Navbar = ({ onMenuToggle, searchQuery, onSearchChange, collapsed }) => {
           <AppIcon name="menu" size={18} />
         </button>
 
+        <div className={styles.mobileBrand}>
+          <img src="/logo.svg" alt="TransitOps" />
+        </div>
+
         <div className={styles.searchWrapper}>
           <svg
             className={styles.searchIcon}
