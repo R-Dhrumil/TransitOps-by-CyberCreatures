@@ -71,6 +71,42 @@ const TripsPage = () => {
     }
   };
 
+  // Trip Actions
+  const handleDispatchTrip = async (id) => {
+    try {
+      await apiClient.patch(`/api/trips/${id}/dispatch`);
+      toast.success('Trip dispatched!');
+      setSelectedTrip(null);
+      refetchTrips();
+    } catch (err) {}
+  };
+
+  const handleCompleteTrip = async (id) => {
+    const odo = window.prompt('Enter final odometer reading:');
+    if (odo === null) return;
+    const final_odometer = Number(odo);
+    if (isNaN(final_odometer) || final_odometer < 0) {
+      toast.error('Invalid odometer reading');
+      return;
+    }
+    try {
+      await apiClient.patch(`/api/trips/${id}/complete`, { final_odometer });
+      toast.success('Trip completed!');
+      setSelectedTrip(null);
+      refetchTrips();
+    } catch (err) {}
+  };
+
+  const handleCancelTrip = async (id) => {
+    if (!window.confirm('Are you sure you want to cancel this trip?')) return;
+    try {
+      await apiClient.patch(`/api/trips/${id}/cancel`);
+      toast.success('Trip cancelled.');
+      setSelectedTrip(null);
+      refetchTrips();
+    } catch (err) {}
+  };
+
   // Filter trips for the Live Board
   const activeTrips = (trips || []).filter((trip) => {
     if (searchQuery) {
@@ -381,6 +417,25 @@ const TripsPage = () => {
                     {selectedTrip.destination}
                   </div>
                 </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-4)', justifyContent: 'flex-end' }}>
+                {hasRole('fleet_manager', 'dispatcher') && selectedTrip.status === 'Draft' && (
+                  <>
+                    <button className="btn btn-primary" onClick={() => handleDispatchTrip(selectedTrip.id)}>Dispatch Trip</button>
+                    <button className="btn btn-danger" onClick={() => handleCancelTrip(selectedTrip.id)}>Cancel Trip</button>
+                  </>
+                )}
+                {hasRole('fleet_manager', 'dispatcher') && selectedTrip.status === 'Dispatched' && (
+                  <>
+                    <button className="btn btn-success" onClick={() => handleCompleteTrip(selectedTrip.id)}>Complete Trip</button>
+                    <button className="btn btn-danger" onClick={() => handleCancelTrip(selectedTrip.id)}>Cancel Trip</button>
+                  </>
+                )}
+                {hasRole('driver') && selectedTrip.status === 'Dispatched' && (
+                  <button className="btn btn-success" onClick={() => handleCompleteTrip(selectedTrip.id)}>Complete Trip</button>
+                )}
               </div>
             </div>
           </div>
