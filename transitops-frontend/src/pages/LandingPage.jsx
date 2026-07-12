@@ -91,7 +91,7 @@ const LandingPage = () => (
     </section>
 
     <footer className={styles.footer}>
-      <p>© 2024 TransitOps · Built with React + Express + PostgreSQL</p>
+      <p>© 2026 TransitOps · Built with React + Express + PostgreSQL</p>
     </footer>
   </div>
 );
