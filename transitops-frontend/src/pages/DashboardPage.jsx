@@ -153,8 +153,8 @@ const DashboardPage = () => {
                   const statusInfo = STATUS_MAP[statusKey] || { label: trip.status, className: '' };
                   return (
                     <tr key={trip.id || idx}>
-                      <td>{trip.trip_number || trip.id || `TR${String(idx + 1).padStart(3, '0')}`}</td>
-                      <td>
+                      <td data-label="TRIP ID">{trip.trip_number || trip.id || `TR${String(idx + 1).padStart(3, '0')}`}</td>
+                      <td data-label="VEHICLE">
                         <span className={styles.vehicleCell}>
                           <svg className={styles.truckIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <rect x="1" y="3" width="15" height="13" />
@@ -165,14 +165,14 @@ const DashboardPage = () => {
                           {trip.vehicle_number || trip.vehicle || '—'}
                         </span>
                       </td>
-                      <td>{trip.driver_name || trip.driver || 'Unassigned'}</td>
-                      <td>
+                      <td data-label="DRIVER">{trip.driver_name || trip.driver || 'Unassigned'}</td>
+                      <td data-label="STATUS">
                         <span className={`${styles.statusBadge} ${styles[statusInfo.className] || ''}`}>
                           <span style={{ marginRight: '4px' }}>●</span>
                           {statusInfo.label}
                         </span>
                       </td>
-                      <td>{trip.eta || '—:—'}</td>
+                      <td data-label="ETA">{trip.eta || '—:—'}</td>
                     </tr>
                   );
                 }) : (

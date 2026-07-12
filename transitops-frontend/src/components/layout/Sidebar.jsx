@@ -15,7 +15,7 @@ const NAV_ITEMS = [
   { path: '/reports',        label: 'Reports',        icon: 'reports', roles: ['fleet_manager', 'financial_analyst', 'safety_officer'] },
 ];
 
-const Sidebar = ({ collapsed, onToggle }) => {
+const Sidebar = ({ collapsed, onToggle, isMobile }) => {
   const { user, logout, hasRole } = useAuth();
   const navigate = useNavigate();
 
@@ -32,7 +32,7 @@ const Sidebar = ({ collapsed, onToggle }) => {
     <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
       <div className={styles.brand}>
         <span className={styles.logo}><AppIcon name="bus" size={22} /></span>
-        {!collapsed && <span className={styles.brandName}>TransitOps</span>}
+        {(!collapsed || isMobile) && <span className={styles.brandName}>TransitOps</span>}
       </div>
 
       <nav className={styles.nav}>
@@ -46,26 +46,28 @@ const Sidebar = ({ collapsed, onToggle }) => {
             title={collapsed ? item.label : undefined}
           >
             <span className={styles.icon}><AppIcon name={item.icon} size={18} /></span>
-            {!collapsed && <span className={styles.label}>{item.label}</span>}
+            {(!collapsed || isMobile) && <span className={styles.label}>{item.label}</span>}
           </NavLink>
         ))}
       </nav>
 
       <div className={styles.footer}>
-        {!collapsed && (
+        {(!collapsed || isMobile) && (
           <div className={styles.userInfo}>
             <span className={styles.userName}>{user?.full_name}</span>
             <span className={styles.userRole}>{user?.role?.replace('_', ' ')}</span>
           </div>
         )}
         <button className={styles.logoutBtn} onClick={handleLogout} title="Logout">
-          <AppIcon name="logout" size={16} /> {!collapsed && 'Logout'}
+          <AppIcon name="logout" size={16} /> {(!collapsed || isMobile) && 'Logout'}
         </button>
       </div>
 
-      <button className={styles.collapseBtn} onClick={onToggle} aria-label="Toggle sidebar">
-        <AppIcon name={collapsed ? 'arrowRight' : 'arrowLeft'} size={12} />
-      </button>
+      {!isMobile && (
+        <button className={styles.collapseBtn} onClick={onToggle} aria-label="Toggle sidebar">
+          <AppIcon name={collapsed ? 'arrowRight' : 'arrowLeft'} size={12} />
+        </button>
+      )}
     </aside>
   );
 };

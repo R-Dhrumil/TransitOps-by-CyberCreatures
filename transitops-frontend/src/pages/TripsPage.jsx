@@ -155,7 +155,7 @@ const TripsPage = () => {
               )}
               {filteredTrips?.map((t) => (
                 <tr key={t.id}>
-                  <td>
+                  <td data-label="Route">
                     <div className={styles.route}>
                       <span>{t.source}</span>
                       <span className={styles.routeArrow}>→</span>
@@ -171,15 +171,15 @@ const TripsPage = () => {
                       </span>
                     )}
                   </td>
-                  <td>{t.registration_number || '—'}</td>
-                  <td>{t.driver_name || '—'}</td>
-                  <td>{Number(t.cargo_weight).toLocaleString()}</td>
-                  <td>{Number(t.planned_distance).toLocaleString()}</td>
-                  <td><StatusBadge status={t.status} /></td>
-                  <td style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-xs)' }}>
+                  <td data-label="Vehicle">{t.registration_number || '—'}</td>
+                  <td data-label="Driver">{t.driver_name || '—'}</td>
+                  <td data-label="Cargo (kg)">{Number(t.cargo_weight).toLocaleString()}</td>
+                  <td data-label="Distance (km)">{Number(t.planned_distance).toLocaleString()}</td>
+                  <td data-label="Status"><StatusBadge status={t.status} /></td>
+                  <td data-label="Created" style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-xs)' }}>
                     {new Date(t.created_at).toLocaleDateString()}
                   </td>
-                  <td>
+                  <td data-label="Actions">
                     <div className={styles.actions}>
                       {t.status === 'Draft' && canCreate && (
                         <>

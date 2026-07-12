@@ -96,11 +96,11 @@ const FuelExpensesPage = () => {
                   {!fuelLogs?.length && <tr><td colSpan="5" style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '3rem' }}>No fuel logs.</td></tr>}
                   {fuelLogs?.map((fl) => (
                     <tr key={fl.id}>
-                      <td><strong>{fl.registration_number}</strong><br /><span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{fl.name_model}</span></td>
-                      <td>{new Date(fl.log_date).toLocaleDateString()}</td>
-                      <td>{Number(fl.liters).toLocaleString()}</td>
-                      <td>₹{Number(fl.cost).toLocaleString()}</td>
-                      <td style={{ color: 'var(--color-brand)' }}>₹{(fl.cost / fl.liters).toFixed(2)}</td>
+                      <td data-label="Vehicle"><strong>{fl.registration_number}</strong><br /><span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{fl.name_model}</span></td>
+                      <td data-label="Date">{new Date(fl.log_date).toLocaleDateString()}</td>
+                      <td data-label="Liters">{Number(fl.liters).toLocaleString()}</td>
+                      <td data-label="Cost (₹)">₹{Number(fl.cost).toLocaleString()}</td>
+                      <td data-label="₹/Liter" style={{ color: 'var(--color-brand)' }}>₹{(fl.cost / fl.liters).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -122,11 +122,11 @@ const FuelExpensesPage = () => {
                   {!expenses?.length && <tr><td colSpan="5" style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '3rem' }}>No expenses recorded.</td></tr>}
                   {expenses?.map((e) => (
                     <tr key={e.id}>
-                      <td>{e.registration_number || '—'}</td>
-                      <td>{e.category}</td>
-                      <td>₹{Number(e.amount).toLocaleString()}</td>
-                      <td>{new Date(e.expense_date).toLocaleDateString()}</td>
-                      <td style={{ color: 'var(--color-text-muted)' }}>{e.notes || '—'}</td>
+                      <td data-label="Vehicle">{e.registration_number || '—'}</td>
+                      <td data-label="Category">{e.category}</td>
+                      <td data-label="Amount (₹)">₹{Number(e.amount).toLocaleString()}</td>
+                      <td data-label="Date">{new Date(e.expense_date).toLocaleDateString()}</td>
+                      <td data-label="Notes" style={{ color: 'var(--color-text-muted)' }}>{e.notes || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
