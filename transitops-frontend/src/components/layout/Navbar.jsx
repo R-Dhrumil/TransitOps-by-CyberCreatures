@@ -72,7 +72,7 @@ const Navbar = ({ onMenuToggle, searchQuery, onSearchChange }) => {
       <div className={styles.right}>
         <div className={styles.notifContainer} ref={notifRef}>
           <button 
-            className={styles.notifBtn} 
+            className={styles.iconBtn} 
             onClick={() => setShowNotifications(!showNotifications)}
             aria-label="Notifications"
           >
