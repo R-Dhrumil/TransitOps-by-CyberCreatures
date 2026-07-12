@@ -201,7 +201,12 @@
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
   .navbar {
-    left: 0;
+    left: 0 !important;
+    padding: 0 var(--space-4);
+  }
+  
+  .navbar.collapsed {
+    left: 0 !important;
   }
 
   .menuBtn {
