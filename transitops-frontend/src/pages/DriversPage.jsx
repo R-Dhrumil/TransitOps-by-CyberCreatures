@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -54,7 +55,7 @@ const DriversPage = () => {
     }
   };
 
-  const canManage = hasRole('safety_officer');
+  const canManage = hasRole('safety_officer', 'fleet_manager', 'dispatcher');
   const today = new Date();
 
   const getLicenseStatus = (driver) => {
@@ -112,8 +113,17 @@ const DriversPage = () => {
                     </td>
                     <td>{d.contact_number || '—'}</td>
                     <td><StatusBadge status={d.status} /></td>
-                    {canManage && (
-                      <td><button className="btn btn-secondary btn-sm" onClick={() => openEdit(d)}>Edit</button></td>
+                     {canManage && (
+                      <td>
+                        <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                          <button className="btn btn-secondary btn-sm" onClick={() => openEdit(d)}>Edit</button>
+                          {d.status === 'Available' && (
+                            <Link to={`/trips/new?driver_id=${d.id}`} className="btn btn-primary btn-sm" style={{ textDecoration: 'none' }}>
+                              Assign Trip
+                            </Link>
+                          )}
+                        </div>
+                      </td>
                     )}
                   </tr>
                 );

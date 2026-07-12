@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -23,6 +23,8 @@ const schema = z.object({
 
 const TripWizard = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const preselectedDriverId = searchParams.get('driver_id');
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
@@ -31,6 +33,9 @@ const TripWizard = () => {
 
   const { register, handleSubmit, watch, trigger, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      driver_id: preselectedDriverId || '',
+    }
   });
 
   const selectedVehicleId = watch('vehicle_id');
