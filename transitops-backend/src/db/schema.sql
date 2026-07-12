@@ -8,8 +8,11 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- ── Enums ────────────────────────────────────────────────────
 DO $$ BEGIN
-  CREATE TYPE user_role AS ENUM ('fleet_manager','driver','safety_officer','financial_analyst');
+  CREATE TYPE user_role AS ENUM ('fleet_manager','driver','safety_officer','financial_analyst','dispatcher');
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Ensure 'dispatcher' is added if type already exists
+ALTER TYPE user_role ADD VALUE IF NOT EXISTS 'dispatcher';
 
 DO $$ BEGIN
   CREATE TYPE vehicle_status AS ENUM ('Available','On Trip','In Shop','Retired');

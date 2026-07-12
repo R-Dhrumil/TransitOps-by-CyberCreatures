@@ -14,6 +14,7 @@ const SEED_USERS = [
   { email: 'driver@transitops.dev',    password: 'Driver@123',    full_name: 'Sam Driver',       role: 'driver' },
   { email: 'safety@transitops.dev',    password: 'Safety@123',    full_name: 'Jordan Safety',    role: 'safety_officer' },
   { email: 'finance@transitops.dev',   password: 'Finance@123',   full_name: 'Taylor Finance',   role: 'financial_analyst' },
+  { email: 'dispatcher@transitops.dev',password: 'Dispatcher@123',full_name: 'Dev Dispatcher',   role: 'dispatcher' },
 ];
 
 const SEED_VEHICLES = [

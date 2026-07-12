@@ -16,7 +16,7 @@ const TripsPage = () => {
   const [completeData, setCompleteData] = useState({ final_odometer: '', fuel_consumed: '', fuel_cost: '' });
   const [submitting, setSubmitting] = useState(false);
 
-  const canCreate = hasRole('driver', 'fleet_manager');
+  const canCreate = hasRole('driver', 'fleet_manager', 'dispatcher');
 
   const handleDispatch = async (id) => {
     if (!confirm('Dispatch this trip? Vehicle and driver status will be set to On Trip.')) return;

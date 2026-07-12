@@ -6,7 +6,7 @@ const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   full_name: z.string().min(2),
-  role: z.enum(['fleet_manager', 'driver', 'safety_officer', 'financial_analyst']),
+  role: z.enum(['fleet_manager', 'driver', 'safety_officer', 'financial_analyst', 'dispatcher']),
 });
 
 const loginSchema = z.object({

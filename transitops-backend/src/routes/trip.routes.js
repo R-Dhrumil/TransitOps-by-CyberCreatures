@@ -52,7 +52,7 @@ router.get('/:id', authenticate, asyncHandler(async (req, res) => {
 }));
 
 // POST /api/trips — driver only (creates as Draft)
-router.post('/', authenticate, requireRole('driver', 'fleet_manager'), validate(tripSchema), asyncHandler(async (req, res) => {
+router.post('/', authenticate, requireRole('driver', 'fleet_manager', 'dispatcher'), validate(tripSchema), asyncHandler(async (req, res) => {
   const { source, destination, vehicle_id, driver_id, cargo_weight, planned_distance } = req.validatedBody;
 
   // Validate cargo <= vehicle capacity
@@ -87,7 +87,7 @@ router.post('/', authenticate, requireRole('driver', 'fleet_manager'), validate(
 }));
 
 // PATCH /api/trips/:id/dispatch — Draft → Dispatched (atomic)
-router.patch('/:id/dispatch', authenticate, requireRole('driver', 'fleet_manager'), asyncHandler(async (req, res) => {
+router.patch('/:id/dispatch', authenticate, requireRole('driver', 'fleet_manager', 'dispatcher'), asyncHandler(async (req, res) => {
   const result = await withTransaction(async (client) => {
     // Row-lock to prevent race conditions
     const { rows: tripRows } = await client.query(
@@ -126,7 +126,7 @@ router.patch('/:id/dispatch', authenticate, requireRole('driver', 'fleet_manager
 }));
 
 // PATCH /api/trips/:id/complete — Dispatched → Completed (atomic)
-router.patch('/:id/complete', authenticate, requireRole('driver', 'fleet_manager'), validate(tripCompleteSchema), asyncHandler(async (req, res) => {
+router.patch('/:id/complete', authenticate, requireRole('driver', 'fleet_manager', 'dispatcher'), validate(tripCompleteSchema), asyncHandler(async (req, res) => {
   const { final_odometer, fuel_consumed, fuel_cost } = req.validatedBody;
 
   const result = await withTransaction(async (client) => {
@@ -168,7 +168,7 @@ router.patch('/:id/complete', authenticate, requireRole('driver', 'fleet_manager
 }));
 
 // PATCH /api/trips/:id/cancel — Dispatched → Cancelled (atomic)
-router.patch('/:id/cancel', authenticate, requireRole('driver', 'fleet_manager'), asyncHandler(async (req, res) => {
+router.patch('/:id/cancel', authenticate, requireRole('driver', 'fleet_manager', 'dispatcher'), asyncHandler(async (req, res) => {
   const result = await withTransaction(async (client) => {
     const { rows: tripRows } = await client.query(
       'SELECT * FROM trips WHERE id = $1 FOR UPDATE', [req.params.id]
