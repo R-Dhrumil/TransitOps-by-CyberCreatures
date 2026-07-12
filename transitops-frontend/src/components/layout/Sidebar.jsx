@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import AppIcon from '../ui/AppIcon.jsx';
 import styles from './Sidebar.module.css';
+import logoImg from '../../assets/logo.svg';
 
 const NAV_ITEMS = [
   { path: '/dashboard',      label: 'Dashboard',      icon: 'dashboard', roles: [] },
@@ -31,8 +32,11 @@ const Sidebar = ({ collapsed, onToggle, isMobile }) => {
   return (
     <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
       <div className={styles.brand}>
-        <span className={styles.logo}><AppIcon name="bus" size={22} /></span>
-        {(!collapsed || isMobile) && <span className={styles.brandName}>TransitOps</span>}
+        {collapsed && !isMobile ? (
+          <span className={styles.logo}><AppIcon name="bus" size={22} /></span>
+        ) : (
+          <img src={logoImg} alt="TransitOps" style={{ maxHeight: '32px', width: 'auto', objectFit: 'contain' }} />
+        )}
       </div>
 
       <nav className={styles.nav}>
