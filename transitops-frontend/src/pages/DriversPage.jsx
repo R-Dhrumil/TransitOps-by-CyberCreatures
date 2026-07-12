@@ -18,7 +18,7 @@ const driverSchema = z.object({
   license_expiry_date: z.string().min(1, 'Required'),
   contact_number: z.string().optional(),
   safety_score: z.coerce.number().min(0).max(100).optional(),
-  status: z.enum(['Available', 'On Trip', 'Off Duty', 'Suspended']).optional(),
+  status: z.enum(['Available', 'On Trip', 'Off Duty', 'Suspended', 'Retired']).optional(),
 });
 
 const DriversPage = () => {
@@ -95,7 +95,8 @@ const DriversPage = () => {
             { label: 'Available', value: 'Available' },
             { label: 'On Trip', value: 'On Trip' },
             { label: 'Off Duty', value: 'Off Duty' },
-            { label: 'Suspended', value: 'Suspended' }
+            { label: 'Suspended', value: 'Suspended' },
+            { label: 'Retired', value: 'Retired' }
           ]}
         />
         <button className="btn btn-secondary btn-sm" onClick={() => setFilters({ status: '' })}>Clear</button>
@@ -197,7 +198,11 @@ const DriversPage = () => {
                   <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                     <label className="form-label">Status</label>
                     <select className="form-select" {...register('status')}>
-                      <option>Available</option><option>Off Duty</option><option>Suspended</option>
+                      <option>Available</option>
+                      <option>On Trip</option>
+                      <option>Off Duty</option>
+                      <option>Suspended</option>
+                      <option>Retired</option>
                     </select>
                   </div>
                 )}

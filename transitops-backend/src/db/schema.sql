@@ -19,8 +19,11 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 DO $$ BEGIN
-  CREATE TYPE driver_status AS ENUM ('Available','On Trip','Off Duty','Suspended');
+  CREATE TYPE driver_status AS ENUM ('Available','On Trip','Off Duty','Suspended','Retired');
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Ensure 'Retired' is added if driver_status already exists
+ALTER TYPE driver_status ADD VALUE IF NOT EXISTS 'Retired';
 
 DO $$ BEGIN
   CREATE TYPE trip_status AS ENUM ('Draft','Dispatched','Completed','Cancelled');
