@@ -32,6 +32,21 @@ const VehiclesPage = () => {
     Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
   );
 
+  // Fetch ALL vehicles (no filters) once to derive the distinct region list
+  const { data: allVehicles } = useVehicles({});
+  const regionOptions = [
+    { label: 'All Regions', value: '' },
+    ...Array.from(
+      new Set(
+        (allVehicles || [])
+          .map((v) => v.region)
+          .filter(Boolean)
+      )
+    )
+      .sort()
+      .map((r) => ({ label: r, value: r })),
+  ];
+
   const filteredVehicles = (vehicles || []).filter((v) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -118,7 +133,12 @@ const VehiclesPage = () => {
             ...VEHICLE_TYPES.map(t => ({ label: t, value: t }))
           ]}
         />
-        <input className="form-input" placeholder="Region…" value={filters.region} onChange={(e) => setFilters((f) => ({ ...f, region: e.target.value }))} />
+        <CustomSelect
+          value={filters.region}
+          onChange={(val) => setFilters((f) => ({ ...f, region: val }))}
+          options={regionOptions}
+        />
+
         <button className="btn btn-secondary btn-sm" onClick={() => setFilters({ status: '', type: '', region: '' })}>Clear</button>
       </div>
 
