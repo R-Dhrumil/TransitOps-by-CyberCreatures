@@ -81,7 +81,7 @@
 .capacityHint {
   padding: var(--space-3) var(--space-4);
   background: var(--color-info-bg);
-  border: 1px solid rgba(59,130,246,0.2);
+  border: 1px solid rgba(59, 130, 246, 0.15);
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
   color: var(--color-info);
