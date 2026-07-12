@@ -10,7 +10,9 @@ import { useDrivers } from '../hooks/useDrivers.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import apiClient from '../lib/apiClient.js';
 import AppIcon from '../components/ui/AppIcon.jsx';
+import { exportTripsPDF } from '../lib/pdfExport.js';
 import styles from './TripsPage.module.css';
+
 
 const schema = z.object({
   source: z.string().min(1, 'Origin required'),
@@ -233,6 +235,14 @@ const TripsPage = () => {
             <p>Monitoring {activeTrips.length} {boardFilter === 'Active' ? 'Active Dispatches' : 'Total Trips'}</p>
           </div>
           <div className={styles.boardControls}>
+            <button
+              className={styles.iconBtn}
+              title="Export trips as PDF"
+              onClick={() => { exportTripsPDF(activeTrips); toast.success('PDF downloaded.'); }}
+              disabled={!activeTrips.length}
+            >
+              <AppIcon name="download" size={16} />
+            </button>
             <button 
               className={styles.iconBtn} 
               title="View Active Only"
