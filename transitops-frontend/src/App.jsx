@@ -66,8 +66,10 @@ export default function App() {
                 {/* Protected routes — all rendered inside AppLayout (sidebar + navbar) */}
                 <Route element={<ProtectedRoute />}>
                   <Route element={<AppLayout />}>
-                    <Route path="/dashboard"    element={<DashboardPage />} />
-                    <Route path="/vehicles"     element={<VehiclesPage />} />
+                    <Route element={<ProtectedRoute roles={['fleet_manager', 'financial_analyst', 'dispatcher', 'safety_officer']} />}>
+                      <Route path="/dashboard"    element={<DashboardPage />} />
+                      <Route path="/vehicles"     element={<VehiclesPage />} />
+                    </Route>
                     <Route path="/drivers"      element={<DriversPage />} />
                     <Route path="/trips"        element={<TripsPage />} />
                     <Route path="/trips/new"    element={<TripWizard />} />

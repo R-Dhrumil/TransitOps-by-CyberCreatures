@@ -6,8 +6,8 @@ import styles from './Sidebar.module.css';
 
 
 const NAV_ITEMS = [
-  { path: '/dashboard',      label: 'Dashboard',      icon: 'dashboard', roles: [] },
-  { path: '/vehicles',       label: 'Vehicles',       icon: 'vehicle', roles: [] },
+  { path: '/dashboard',      label: 'Dashboard',      icon: 'dashboard', roles: ['fleet_manager', 'financial_analyst', 'dispatcher', 'safety_officer'] },
+  { path: '/vehicles',       label: 'Vehicles',       icon: 'vehicle', roles: ['fleet_manager', 'financial_analyst', 'dispatcher', 'safety_officer'] },
   { path: '/drivers',        label: 'Drivers',        icon: 'users', roles: [] },
   { path: '/trips',          label: 'Trips',          icon: 'route', roles: [] },
   { path: '/quick-report',   label: 'Quick Report',   icon: 'alert', roles: ['driver'] },
