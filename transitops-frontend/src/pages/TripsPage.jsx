@@ -1,410 +1,342 @@
 import React, { useState } from 'react';
-import { Link, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { useTrips } from '../hooks/useTrips.js';
+import { useVehicles } from '../hooks/useVehicles.js';
+import { useDrivers } from '../hooks/useDrivers.js';
 import { useAuth } from '../context/AuthContext.jsx';
-import StatusBadge from '../components/ui/StatusBadge.jsx';
 import apiClient from '../lib/apiClient.js';
 import AppIcon from '../components/ui/AppIcon.jsx';
-import ConfirmModal from '../components/ui/ConfirmModal.jsx';
 import styles from './TripsPage.module.css';
+
+const schema = z.object({
+  source: z.string().min(1, 'Origin required'),
+  destination: z.string().min(1, 'Destination required'),
+  vehicle_id: z.string().uuid('Select a vehicle'),
+  driver_id: z.string().uuid('Select a driver'),
+  cargo_weight: z.coerce.number().positive('Must be positive'),
+  planned_distance: z.coerce.number().positive('Must be positive'),
+});
 
 const TripsPage = () => {
   const { hasRole } = useAuth();
   const { searchQuery } = useOutletContext() || {};
-  const [statusFilter, setStatusFilter] = useState('');
-  const { data: trips, loading, error, refetch } = useTrips(statusFilter ? { status: statusFilter } : {});
+  
+  const { data: trips, refetch: refetchTrips } = useTrips({});
+  const { data: vehicles } = useVehicles({ status: 'Available' });
+  const { data: drivers } = useDrivers({ status: 'Available' });
 
-  const filteredTrips = (trips || []).filter((trip) => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      (trip.trip_number && trip.trip_number.toLowerCase().includes(query)) ||
-      (trip.source && trip.source.toLowerCase().includes(query)) ||
-      (trip.destination && trip.destination.toLowerCase().includes(query)) ||
-      (trip.driver_name && trip.driver_name.toLowerCase().includes(query)) ||
-      (trip.registration_number && trip.registration_number.toLowerCase().includes(query))
-    );
-  });
-
-  const [completeModal, setCompleteModal] = useState(null);
-  const [completeData, setCompleteData] = useState({ final_odometer: '', fuel_consumed: '', fuel_cost: '' });
   const [submitting, setSubmitting] = useState(false);
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
-
-  // Incident state variables
-  const [reportModalTripId, setReportModalTripId] = useState(null);
-  const [reportData, setReportData] = useState({ incident_type: 'Traffic Jam', location: '', photo_url: '', comments: '' });
-  const [viewModalTrip, setViewModalTrip] = useState(null);
-  const [incidentsList, setIncidentsList] = useState([]);
-  const [loadingIncidents, setLoadingIncidents] = useState(false);
+  const [boardFilter, setBoardFilter] = useState('Active'); // Active or All
 
   const canCreate = hasRole('driver', 'fleet_manager', 'dispatcher');
 
-  const handleDispatch = async (id) => {
-    setConfirmDialog({
-      isOpen: true,
-      message: 'Dispatch this trip? Vehicle and driver status will be set to On Trip.',
-      onConfirm: async () => {
-        setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
-        try {
-          await apiClient.patch(`/api/trips/${id}/dispatch`);
-          toast.success('Trip dispatched!');
-          refetch();
-        } catch {}
-      }
-    });
-  };
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    resolver: zodResolver(schema)
+  });
 
-  const handleCancel = async (id) => {
-    setConfirmDialog({
-      isOpen: true,
-      message: 'Cancel this trip?',
-      onConfirm: async () => {
-        setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
-        try {
-          await apiClient.patch(`/api/trips/${id}/cancel`);
-          toast.success('Trip cancelled.');
-          refetch();
-        } catch {}
-      }
-    });
-  };
-
-  const handleComplete = async () => {
-    if (!completeModal) return;
+  const onSubmitDraft = async (data) => {
     setSubmitting(true);
     try {
-      await apiClient.patch(`/api/trips/${completeModal}/complete`, {
-        final_odometer: Number(completeData.final_odometer),
-        fuel_consumed: completeData.fuel_consumed ? Number(completeData.fuel_consumed) : undefined,
-        fuel_cost: completeData.fuel_cost ? Number(completeData.fuel_cost) : undefined,
-      });
-      toast.success('Trip completed!');
-      setCompleteModal(null);
-      refetch();
+      await apiClient.post('/api/trips', data);
+      toast.success('Draft saved successfully.');
+      reset();
+      refetchTrips();
+    } catch (err) {
+      // API client handles toast
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleOpenViewIncidents = async (trip) => {
-    setViewModalTrip(trip);
-    setLoadingIncidents(true);
-    try {
-      const response = await apiClient.get(`/api/trips/${trip.id}/incidents`);
-      setIncidentsList(response.data.data);
-    } catch {
-      toast.error('Failed to load incidents');
-    } finally {
-      setLoadingIncidents(false);
-    }
-  };
-
-  const handleReportIncident = async () => {
-    if (!reportModalTripId) return;
+  const onSubmitDispatch = async (data) => {
     setSubmitting(true);
     try {
-      await apiClient.post(`/api/trips/${reportModalTripId}/incidents`, reportData);
-      toast.success('Incident reported successfully!');
-      setReportModalTripId(null);
-      setReportData({ incident_type: 'Traffic Jam', location: '', photo_url: '', comments: '' });
-      refetch();
-    } catch {
-      // API client automatically shows toast error
+      const res = await apiClient.post('/api/trips', data);
+      const newTrip = res.data.data;
+      await apiClient.patch(`/api/trips/${newTrip.id}/dispatch`);
+      toast.success('Trip dispatched successfully!');
+      reset();
+      refetchTrips();
+    } catch (err) {
+      // API client handles toast
     } finally {
       setSubmitting(false);
     }
+  };
+
+  // Filter trips for the Live Board
+  const activeTrips = (trips || []).filter((trip) => {
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchesSearch = (trip.trip_number?.toLowerCase().includes(q) || trip.source?.toLowerCase().includes(q) || trip.destination?.toLowerCase().includes(q));
+      if (!matchesSearch) return false;
+    }
+    if (boardFilter === 'Active') {
+      return trip.status === 'Dispatched';
+    }
+    return true; // All
+  });
+
+  // Helper to generate visual flair for progress based on ID length or character codes
+  const getSimulatedProgress = (tripId) => {
+    if (!tripId) return { pct: 0, str: '0%' };
+    const num = tripId.charCodeAt(0) + tripId.charCodeAt(tripId.length - 1);
+    const pct = num % 100;
+    return { pct, str: `${pct}%` };
   };
 
   return (
-    <div>
-      <div className="page-header">
-        <h2>Trip Management</h2>
-        {canCreate && <Link to="/trips/new" className="btn btn-primary">+ New Trip</Link>}
-      </div>
-
-      <div className="filters-bar">
-        {['', 'Draft', 'Dispatched', 'Completed', 'Cancelled'].map((s) => (
-          <button
-            key={s}
-            className={`btn ${statusFilter === s ? 'btn-primary' : 'btn-secondary'} btn-sm`}
-            onClick={() => setStatusFilter(s)}
-          >
-            {s || 'All'}
-          </button>
-        ))}
-        <button className="btn btn-secondary btn-sm" onClick={refetch}><AppIcon name="refresh" size={14} /></button>
-      </div>
-
-      {loading && <div className="loading-state"><div className="spinner" /><span>Loading trips…</span></div>}
-      {error && <div className="empty-state"><span><AppIcon name="alert" size={18} /></span><p>Failed to load. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>}
-
-      {!loading && !error && (
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Route</th><th>Vehicle</th><th>Driver</th><th>Cargo (kg)</th>
-                <th>Distance (km)</th><th>Status</th><th>Created</th><th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {!filteredTrips?.length && (
-                <tr><td colSpan="8" style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '3rem' }}>No trips found.</td></tr>
-              )}
-              {filteredTrips?.map((t) => (
-                <tr key={t.id}>
-                  <td data-label="Route">
-                    <div className={styles.route}>
-                      <span>{t.source}</span>
-                      <span className={styles.routeArrow}>→</span>
-                      <span>{t.destination}</span>
-                    </div>
-                    {t.incident_count > 0 && (
-                      <span 
-                        className={styles.incidentBadge} 
-                        onClick={() => handleOpenViewIncidents(t)}
-                        title="Click to view reported incidents"
-                      >
-                        ⚠️ {t.incident_count} {t.incident_count === 1 ? 'Issue' : 'Issues'}
-                      </span>
-                    )}
-                  </td>
-                  <td data-label="Vehicle">{t.registration_number || '—'}</td>
-                  <td data-label="Driver">{t.driver_name || '—'}</td>
-                  <td data-label="Cargo (kg)">{Number(t.cargo_weight).toLocaleString()}</td>
-                  <td data-label="Distance (km)">{Number(t.planned_distance).toLocaleString()}</td>
-                  <td data-label="Status"><StatusBadge status={t.status} /></td>
-                  <td data-label="Created" style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-xs)' }}>
-                    {new Date(t.created_at).toLocaleDateString()}
-                  </td>
-                  <td data-label="Actions">
-                    <div className={styles.actions}>
-                      {t.status === 'Draft' && canCreate && (
-                        <>
-                          <button className="btn btn-success btn-sm" onClick={() => handleDispatch(t.id)}>Dispatch</button>
-                          <button className="btn btn-danger btn-sm" onClick={() => handleCancel(t.id)}>Cancel</button>
-                        </>
-                      )}
-                      {t.status === 'Dispatched' && (
-                        <>
-                          {canCreate && <button className="btn btn-primary btn-sm" onClick={() => setCompleteModal(t.id)}>Complete</button>}
-                          <button className="btn btn-warning btn-sm" style={{ backgroundColor: '#eab308', borderColor: '#eab308', color: '#fff' }} onClick={() => { setReportModalTripId(t.id); setReportData({ incident_type: 'Traffic Jam', location: '', photo_url: '', comments: '' }); }}>⚠️ Report Issue</button>
-                          {canCreate && <button className="btn btn-danger btn-sm" onClick={() => handleCancel(t.id)}>Cancel</button>}
-                        </>
-                      )}
-                      {t.incident_count > 0 && (
-                        <button className="btn btn-secondary btn-sm" onClick={() => handleOpenViewIncidents(t)}>💬 View Issues ({t.incident_count})</button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className={styles.pageLayout}>
+      
+      {/* LEFT PANEL: New Dispatch Order */}
+      <div className={styles.formCard}>
+        <div className={styles.formHeader}>
+          <h2 className={styles.formTitle}>New Dispatch Order</h2>
+          <span className={styles.draftBadge}>Draft</span>
         </div>
-      )}
 
-      {/* Complete modal */}
-      {completeModal && (
-        <div className="modal-overlay" onClick={() => setCompleteModal(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Complete Trip</h3>
-              <button className="modal-close" onClick={() => setCompleteModal(null)}>✕</button>
+        <div className={styles.formBody}>
+          <div className={styles.stepper}>
+            <div className={styles.stepperFill} style={{ width: '10%' }}></div>
+            <div className={`${styles.step} ${styles.active}`}>
+              <div className={styles.stepDot}></div>
+              <span className={styles.stepLabel}>Draft</span>
             </div>
-            <div className="form-group">
-              <label className="form-label">Final Odometer Reading (km) *</label>
-              <input type="number" className="form-input" placeholder="e.g. 48500"
-                value={completeData.final_odometer}
-                onChange={(e) => setCompleteData((d) => ({ ...d, final_odometer: e.target.value }))} />
+            <div className={styles.step}>
+              <div className={styles.stepDot}></div>
+              <span className={styles.stepLabel}>Dispatched</span>
             </div>
-            <div style={{ marginTop: 'var(--space-4)' }} className="form-group">
-              <label className="form-label">Fuel Consumed (liters) — optional</label>
-              <input type="number" className="form-input" placeholder="e.g. 85"
-                value={completeData.fuel_consumed}
-                onChange={(e) => setCompleteData((d) => ({ ...d, fuel_consumed: e.target.value }))} />
-            </div>
-            <div style={{ marginTop: 'var(--space-4)' }} className="form-group">
-              <label className="form-label">Fuel Cost (₹) — optional</label>
-              <input type="number" className="form-input" placeholder="e.g. 7650"
-                value={completeData.fuel_cost}
-                onChange={(e) => setCompleteData((d) => ({ ...d, fuel_cost: e.target.value }))} />
-            </div>
-            <div className="modal-actions">
-              <button className="btn btn-secondary" onClick={() => setCompleteModal(null)}>Cancel</button>
-              <button className="btn btn-primary" onClick={handleComplete} disabled={!completeData.final_odometer || submitting}>
-                {submitting ? 'Saving…' : 'Mark Complete'}
-              </button>
+            <div className={styles.step}>
+              <div className={styles.stepDot}></div>
+              <span className={styles.stepLabel}>Completed</span>
             </div>
           </div>
-        </div>
-      )}
 
-      <ConfirmModal
-        isOpen={confirmDialog.isOpen}
-        message={confirmDialog.message}
-        onConfirm={confirmDialog.onConfirm}
-        onCancel={() => setConfirmDialog((prev) => ({ ...prev, isOpen: false }))}
-      />
-
-      {/* Report Incident modal */}
-      {reportModalTripId && (
-        <div className="modal-overlay" onClick={() => setReportModalTripId(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Report Trip Incident</h3>
-              <button className="modal-close" onClick={() => setReportModalTripId(null)}>✕</button>
-            </div>
-            
-            <div className="form-group">
-              <label className="form-label">Incident Type *</label>
-              <select 
-                className="form-select"
-                value={reportData.incident_type}
-                onChange={(e) => setReportData((d) => ({ ...d, incident_type: e.target.value }))}
-              >
-                <option value="Traffic Jam">🚧 Traffic Jam</option>
-                <option value="Accident/Collision">🚗 Accident/Collision</option>
-                <option value="Vehicle Breakdown">🚨 Vehicle Breakdown</option>
-                <option value="Fuel Issue">⛽ Fuel Issue</option>
-                <option value="Bad Weather">🌧 Bad Weather</option>
-                <option value="Road Closed">🚧 Road Closed</option>
-                <option value="Location Share">📍 Share Live Location</option>
-              </select>
-            </div>
-
-            <div style={{ marginTop: 'var(--space-4)' }} className="form-group">
-              <label className="form-label">Location / Address</label>
-              <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+          <form id="dispatchForm" onSubmit={handleSubmit(onSubmitDraft)}>
+            {/* Routing Details */}
+            <div className={styles.sectionTitle}>Routing Details</div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Source Location</label>
+              <div className={styles.inputWrapper}>
+                <AppIcon name="mapPin" size={16} className={styles.inputIcon} />
                 <input 
                   type="text" 
-                  className="form-input" 
-                  placeholder="e.g. Mumbai-Pune Expressway KM 45"
-                  value={reportData.location}
-                  onChange={(e) => setReportData((d) => ({ ...d, location: e.target.value }))} 
+                  className={styles.customInput} 
+                  placeholder="Warehouse Alpha, Sector 4"
+                  {...register('source')}
                 />
-                <button 
-                  type="button" 
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => setReportData((d) => ({ ...d, location: `Lat: ${(18.9 + Math.random() * 0.2).toFixed(4)}, Lng: ${(72.8 + Math.random() * 0.2).toFixed(4)}` }))}
-                  title="Share live GPS coordinates"
-                >
-                  📍 GPS
-                </button>
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Destination</label>
+              <div className={styles.inputWrapper}>
+                <AppIcon name="mapPin" size={16} className={styles.inputIcon} />
+                <input 
+                  type="text" 
+                  className={styles.customInput} 
+                  placeholder="Distribution Hub Beta"
+                  {...register('destination')}
+                />
               </div>
             </div>
 
-            <div style={{ marginTop: 'var(--space-4)' }} className="form-group">
-              <label className="form-label">Photo (Optional)</label>
-              <input 
-                type="file" 
-                accept="image/*"
-                className="form-input" 
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                      setReportData((d) => ({ ...d, photo_url: reader.result }));
-                    };
-                    reader.readAsDataURL(file);
-                  } else {
-                    setReportData((d) => ({ ...d, photo_url: '' }));
-                  }
-                }} 
-              />
+            {/* Asset Assignment */}
+            <div className={styles.sectionTitle} style={{ marginTop: 'var(--space-2)' }}>Asset Assignment</div>
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <div className={styles.labelRow}>
+                  <label className={styles.formLabel}>Vehicle</label>
+                  <span className={styles.availableCount}>{vehicles?.length || 0} Available</span>
+                </div>
+                <select className={styles.customSelect} {...register('vehicle_id')}>
+                  <option value="">Select Available Vehicle...</option>
+                  {vehicles?.map(v => (
+                    <option key={v.id} value={v.id}>{v.registration_number}</option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles.formGroup}>
+                <div className={styles.labelRow}>
+                  <label className={styles.formLabel}>Driver</label>
+                  <span className={styles.availableCount}>{drivers?.length || 0} Available</span>
+                </div>
+                <select className={styles.customSelect} {...register('driver_id')}>
+                  <option value="">Select Available Driver...</option>
+                  {drivers?.map(d => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <div style={{ marginTop: 'var(--space-4)' }} className="form-group">
-              <label className="form-label">Comments / Details</label>
-              <textarea 
-                className="form-input" 
-                rows="3"
-                placeholder="Describe the issue..."
-                value={reportData.comments}
-                onChange={(e) => setReportData((d) => ({ ...d, comments: e.target.value }))}
-              />
+            {/* Load Metrics */}
+            <div className={styles.sectionTitle} style={{ marginTop: 'var(--space-2)' }}>Load Metrics</div>
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Cargo Weight (lbs)</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  className={styles.customInput} 
+                  style={{ paddingLeft: 'var(--space-3)' }}
+                  placeholder="0.00"
+                  {...register('cargo_weight')}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Planned Distance (mi)</label>
+                <input 
+                  type="number" 
+                  step="0.1"
+                  className={styles.customInput} 
+                  style={{ paddingLeft: 'var(--space-3)' }}
+                  placeholder="0.0"
+                  {...register('planned_distance')}
+                />
+              </div>
             </div>
-
-            <div className="modal-actions">
-              <button className="btn btn-secondary" onClick={() => setReportModalTripId(null)}>Cancel</button>
-              <button className="btn btn-primary" onClick={handleReportIncident} disabled={submitting}>
-                {submitting ? 'Submitting…' : 'Submit Report'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* View Incidents modal */}
-      {viewModalTrip && (
-        <div className="modal-overlay" onClick={() => setViewModalTrip(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Incident Log — {viewModalTrip.source} to {viewModalTrip.destination}</h3>
-              <button className="modal-close" onClick={() => setViewModalTrip(null)}>✕</button>
-            </div>
-
-            {loadingIncidents && (
-              <div className="loading-state">
-                <div className="spinner" />
-                <span>Loading incident details…</span>
+            
+            {/* Show any validation errors at the bottom */}
+            {Object.keys(errors).length > 0 && (
+              <div style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--space-2)' }}>
+                Please fill all required fields correctly.
               </div>
             )}
+          </form>
+        </div>
 
-            {!loadingIncidents && (
-              <div className={styles.timeline}>
-                {!incidentsList.length && (
-                  <p style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '2rem' }}>
-                    No incidents reported for this trip.
-                  </p>
-                )}
-                {incidentsList.map((inc) => {
-                  let emoji = '⚠️';
-                  if (inc.incident_type === 'Traffic Jam') emoji = '🚧';
-                  else if (inc.incident_type === 'Accident/Collision') emoji = '🚗';
-                  else if (inc.incident_type === 'Vehicle Breakdown') emoji = '🚨';
-                  else if (inc.incident_type === 'Fuel Issue') emoji = '⛽';
-                  else if (inc.incident_type === 'Bad Weather') emoji = '🌧';
-                  else if (inc.incident_type === 'Road Closed') emoji = '🚧';
-                  else if (inc.incident_type === 'Location Share') emoji = '📍';
+        <div className={styles.formActions}>
+          <button 
+            type="button" 
+            className="btn btn-secondary" 
+            onClick={handleSubmit(onSubmitDraft)}
+            disabled={submitting || !canCreate}
+          >
+            Save Draft
+          </button>
+          <button 
+            type="button" 
+            className="btn btn-primary" 
+            onClick={handleSubmit(onSubmitDispatch)}
+            disabled={submitting || !canCreate}
+          >
+            <AppIcon name="rocket" size={14} /> Dispatch Trip
+          </button>
+        </div>
+      </div>
 
-                  return (
-                    <div key={inc.id} className={styles.timelineItem}>
-                      <div className={styles.timelineHeader}>
-                        <span className={styles.timelineType}>{emoji} {inc.incident_type}</span>
-                        <span className={styles.timelineMeta}>
-                          {new Date(inc.created_at).toLocaleString()}
-                        </span>
-                      </div>
-                      <div className={styles.timelineBody}>
-                        <p style={{ margin: 0 }}><strong>Reported By:</strong> {inc.reporter_name || 'Driver Quick Portal'}</p>
-                        {inc.comments && <p style={{ margin: 'var(--space-1) 0 0 0' }}>{inc.comments}</p>}
-                        {inc.location && (
-                          <div className={styles.timelineLocation}>
-                            <span>📍 Location: {inc.location}</span>
-                          </div>
-                        )}
-                        {inc.photo_url && (
-                          <div>
-                            <img src={inc.photo_url} alt="Incident attachment" className={styles.timelinePhoto} />
-                          </div>
-                        )}
-                      </div>
+      {/* RIGHT PANEL: Live Board */}
+      <div className={styles.boardPanel}>
+        <div className={styles.boardHeader}>
+          <div className={styles.boardTitle}>
+            <h2>Live Board</h2>
+            <p>Monitoring {activeTrips.length} {boardFilter === 'Active' ? 'Active Dispatches' : 'Total Trips'}</p>
+          </div>
+          <div className={styles.boardControls}>
+            <button 
+              className={styles.iconBtn} 
+              title="View Active Only"
+              onClick={() => setBoardFilter('Active')}
+              style={{ background: boardFilter === 'Active' ? 'var(--color-bg-hover)' : '' }}
+            >
+              <AppIcon name="filter" size={16} />
+            </button>
+            <button 
+              className={styles.iconBtn} 
+              title="View All"
+              onClick={() => setBoardFilter('All')}
+              style={{ background: boardFilter === 'All' ? 'var(--color-bg-hover)' : '' }}
+            >
+              <AppIcon name="menu" size={16} />
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.boardList}>
+          {activeTrips.length === 0 && (
+            <div className="empty-state">
+              <AppIcon name="alert" size={24} />
+              <p>No trips found.</p>
+            </div>
+          )}
+          {activeTrips.map(trip => {
+            const { pct, str } = getSimulatedProgress(trip.id);
+            const distDone = Math.floor((trip.planned_distance || 0) * (pct / 100));
+            
+            let statusClass = styles.inTransit;
+            let displayStatus = 'IN TRANSIT';
+            let etaText = `ETA: ${new Date(Date.now() + 1000 * 60 * 60 * 2).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+            
+            if (trip.status === 'Draft') {
+              displayStatus = 'DRAFT';
+              statusClass = styles.loading;
+              etaText = 'NOT STARTED';
+            } else if (trip.status === 'Completed') {
+              displayStatus = 'COMPLETED';
+              statusClass = styles.unloading;
+              etaText = 'ARRIVED';
+            } else if (trip.status === 'Cancelled') {
+              displayStatus = 'CANCELLED';
+              statusClass = styles.loading;
+              etaText = 'CANCELLED';
+            } else {
+              // Simulated dynamic status based on %
+              if (pct < 15) { displayStatus = 'LOADING'; statusClass = styles.loading; etaText = 'Wait: 45m'; }
+              else if (pct > 90) { displayStatus = 'UNLOADING'; statusClass = styles.unloading; etaText = 'ETA: ARRIVED'; }
+            }
+
+            return (
+              <div key={trip.id} className={styles.dispatchCard}>
+                <div className={styles.cardTop}>
+                  <div className={styles.cardInfo}>
+                    <div className={styles.truckIconWrapper}>
+                      <AppIcon name="truck" size={18} />
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                    <div>
+                      <h4 className={styles.tripId}>{trip.trip_number || trip.id.split('-')[0].toUpperCase()}</h4>
+                      <p className={styles.tripMeta}>
+                        Driver: {trip.driver_name?.split(' ')[0] || 'Unassigned'} • Asset: {trip.registration_number || 'TBD'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className={styles.cardStatus}>
+                    <span className={`${styles.statusText} ${statusClass}`}>{displayStatus}</span>
+                    <span className={styles.timeMeta}>{etaText}</span>
+                  </div>
+                </div>
 
-            <div className="modal-actions">
-              <button className="btn btn-secondary" onClick={() => setViewModalTrip(null)}>Close</button>
-            </div>
-          </div>
+                <div className={styles.cardMiddle}>
+                  <div className={styles.locationCol}>
+                    <span className={styles.locationLabel}>Origin</span>
+                    <span className={styles.locationName}>{trip.source}</span>
+                  </div>
+                  <div className={`${styles.locationCol} ${styles.right}`}>
+                    <span className={styles.locationLabel}>Destination</span>
+                    <span className={styles.locationName}>{trip.destination}</span>
+                  </div>
+                </div>
+
+                <div className={styles.cardBottom}>
+                  <span>{trip.status === 'Draft' ? '0%' : str}</span>
+                  <div className={styles.progressBarContainer}>
+                    <div 
+                      className={`${styles.progressBarFill} ${statusClass}`} 
+                      style={{ width: trip.status === 'Draft' ? '0%' : str }} 
+                    />
+                  </div>
+                  <span>
+                    {trip.status === 'Draft' ? '0' : distDone}mi
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      )}
+      </div>
     </div>
   );
 };
