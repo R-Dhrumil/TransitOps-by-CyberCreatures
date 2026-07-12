@@ -30,14 +30,16 @@ const FuelExpensesPage = () => {
   const { hasRole } = useAuth();
   const [tab, setTab] = useState('fuel');
   const { data: fuelLogs, loading: fLoading, refetch: refetchFuel } = useApi('/api/fuel-logs');
-  const { data: expenses, loading: eLoading, refetch: refetchExpense } = useApi('/api/expenses');
+  
+  const canLogFuel = hasRole('driver', 'fleet_manager');
+  const canManageExpenses = hasRole('financial_analyst');
+  const canViewExpenses = hasRole('financial_analyst', 'fleet_manager');
+
+  const { data: expenses, loading: eLoading, refetch: refetchExpense } = useApi(canViewExpenses ? '/api/expenses' : null);
   const { data: vehicles } = useApi('/api/vehicles');
   const [showFuelModal, setShowFuelModal] = useState(false);
   const [showExpModal, setShowExpModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
-  const canLogFuel = hasRole('driver', 'fleet_manager');
-  const canManageExpenses = hasRole('financial_analyst');
 
   const fuelForm = useForm({ resolver: zodResolver(fuelSchema) });
   const expForm = useForm({ resolver: zodResolver(expenseSchema) });
@@ -77,7 +79,9 @@ const FuelExpensesPage = () => {
       {/* Tab Switch */}
       <div className={styles.tabs}>
         <button className={`${styles.tab} ${tab === 'fuel' ? styles.activeTab : ''}`} onClick={() => setTab('fuel')}><AppIcon name="fuel" size={14} /> Fuel Logs</button>
-        <button className={`${styles.tab} ${tab === 'expenses' ? styles.activeTab : ''}`} onClick={() => setTab('expenses')}><AppIcon name="dollar" size={14} /> Expenses</button>
+        {canViewExpenses && (
+          <button className={`${styles.tab} ${tab === 'expenses' ? styles.activeTab : ''}`} onClick={() => setTab('expenses')}><AppIcon name="dollar" size={14} /> Expenses</button>
+        )}
       </div>
 
       {/* Fuel Logs */}
