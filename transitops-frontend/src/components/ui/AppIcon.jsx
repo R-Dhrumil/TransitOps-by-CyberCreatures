@@ -44,6 +44,7 @@ const ICON_PATHS = {
   x: ['M18 6 6 18', 'M6 6l12 12'],
   plus: ['M12 5v14', 'M5 12h14'],
   info: ['M12 16v-4', 'M12 8h.01', 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z'],
+  chevronDown: ['m6 9 6 6 6-6'],
 };
 
 const AppIcon = ({ name, size = 18, className = '', strokeWidth = 1.8 }) => {
