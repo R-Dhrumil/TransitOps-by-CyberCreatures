@@ -34,8 +34,8 @@ const LoginPage = () => {
   const onSubmit = async ({ email, password }) => {
     setLoading(true);
     try {
-      await login(email, password);
-      const from = location.state?.from?.pathname || '/dashboard';
+      const userData = await login(email, password);
+      const from = location.state?.from?.pathname || (userData.role === 'driver' ? '/drivers' : '/dashboard');
       toast.success('Welcome back!');
       navigate(from, { replace: true });
     } catch (err) {

@@ -19,8 +19,8 @@ const ProtectedRoute = ({ roles = [] }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (roles.length > 0 && !roles.includes(user.role)) {
-    return <Navigate to="/dashboard" replace />;
+  if (roles.length > 0 && !roles.some(r => r === user.role)) {
+    return <Navigate to={user.role === 'driver' ? '/drivers' : '/dashboard'} replace />;
   }
 
   return <Outlet />;
