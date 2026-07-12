@@ -16,6 +16,7 @@ const DashboardPage = () => {
   const { searchQuery } = useOutletContext() || {};
   const { data: dashboardData, loading: dashLoading, error: dashError, refetch: refetchDash } = useDashboard();
   const { data: tripsData, loading: tripsLoading, error: tripsError, refetch: refetchTrips } = useTrips();
+  const [statusFilter, setStatusFilter] = React.useState('All');
 
   const handleRefresh = () => {
     refetchDash();
@@ -42,6 +43,14 @@ const DashboardPage = () => {
   const maintPct = totalVehicles > 0 ? Math.round((maintCount / totalVehicles) * 100) : 0;
 
   const filteredTrips = (tripsData || []).filter((trip) => {
+    // Status Filter
+    if (statusFilter !== 'All') {
+      const tripStatus = (trip.status || '').toLowerCase();
+      const targetStatus = statusFilter.toLowerCase();
+      if (tripStatus !== targetStatus) return false;
+    }
+
+    // Search Query Filter
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
     return (
@@ -49,9 +58,8 @@ const DashboardPage = () => {
       (trip.source && trip.source.toLowerCase().includes(query)) ||
       (trip.destination && trip.destination.toLowerCase().includes(query)) ||
       (trip.driver_name && trip.driver_name.toLowerCase().includes(query)) ||
-      (trip.vehicle_number && trip.vehicle_number.toLowerCase().includes(query)) ||
-      (trip.vehicle && trip.vehicle.toLowerCase().includes(query)) ||
-      (trip.driver && trip.driver.toLowerCase().includes(query))
+      (trip.registration_number && trip.registration_number.toLowerCase().includes(query)) ||
+      (trip.name_model && trip.name_model.toLowerCase().includes(query))
     );
   });
 
@@ -126,14 +134,30 @@ const DashboardPage = () => {
         <div className={styles.recentTripsCard}>
           <div className={styles.cardHeader}>
             <h3 className={styles.cardTitle}>Recent Trips</h3>
-            <button className={styles.filterBtn}>
-              <svg className={styles.filterIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="4" y1="6" x2="20" y2="6" />
-                <line x1="8" y1="12" x2="16" y2="12" />
-                <line x1="11" y1="18" x2="13" y2="18" />
-              </svg>
-              Filter
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <select 
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                style={{
+                  background: 'rgba(30, 41, 59, 0.6)',
+                  border: '1px solid var(--color-border-light)',
+                  color: 'var(--color-text-secondary)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '6px 12px',
+                  fontSize: '12px',
+                  outline: 'none',
+                  cursor: 'pointer',
+                  fontWeight: '500',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <option value="All">All Statuses</option>
+                <option value="Draft">Draft</option>
+                <option value="Dispatched">Dispatched</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
           </div>
 
           <div className={styles.tableResponsive}>
@@ -162,7 +186,7 @@ const DashboardPage = () => {
                             <circle cx="5.5" cy="18.5" r="2.5" />
                             <circle cx="18.5" cy="18.5" r="2.5" />
                           </svg>
-                          {trip.vehicle_number || trip.vehicle || '—'}
+                          {trip.registration_number || trip.name_model || '—'}
                         </span>
                       </td>
                       <td data-label="DRIVER">{trip.driver_name || trip.driver || 'Unassigned'}</td>

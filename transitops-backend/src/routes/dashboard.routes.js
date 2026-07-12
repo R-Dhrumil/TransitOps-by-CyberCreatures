@@ -29,6 +29,7 @@ router.get('/kpis', authenticate, asyncHandler(async (req, res) => {
         COUNT(*) FILTER (WHERE status = 'On Trip')   AS on_trip,
         COUNT(*) FILTER (WHERE status = 'Off Duty')  AS off_duty,
         COUNT(*) FILTER (WHERE status = 'Suspended') AS suspended,
+        COUNT(*) FILTER (WHERE status = 'Retired')   AS retired,
         COUNT(*)                                      AS total
       FROM drivers
     `),

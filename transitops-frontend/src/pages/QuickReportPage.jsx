@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import apiClient from '../lib/apiClient.js';
 import AppIcon from '../components/ui/AppIcon.jsx';
@@ -17,6 +17,10 @@ const INCIDENT_TYPES = [
 
 export default function QuickReportPage() {
   const { user } = useAuth();
+
+  if (user && user.role !== 'driver') {
+    return <Navigate to="/dashboard" replace />;
+  }
   const [step, setStep] = useState(0); // 0: Search, 1: Report Form, 2: Success
   const [vehicleNo, setVehicleNo] = useState('');
   const [loading, setLoading] = useState(false);

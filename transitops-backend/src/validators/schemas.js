@@ -36,7 +36,7 @@ const driverSchema = z.object({
 });
 
 const driverUpdateSchema = driverSchema.partial().extend({
-  status: z.enum(['Available', 'On Trip', 'Off Duty', 'Suspended']).optional(),
+  status: z.enum(['Available', 'On Trip', 'Off Duty', 'Suspended', 'Retired']).optional(),
 });
 
 const tripSchema = z.object({
