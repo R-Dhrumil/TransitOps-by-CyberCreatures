@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import AppIcon from '../components/ui/AppIcon.jsx';
 import styles from './LandingPage.module.css';
-import logoImg from '../assets/logo.svg';
 
 const FEATURES = [
   { icon: 'vehicle', title: 'Real-time Fleet Registry', desc: 'Monitor vehicle status, odometer readings, and assignments with instant updates across the network.' },
@@ -33,7 +32,7 @@ const LandingPage = () => {
       {/* Navbar */}
       <nav className={styles.nav}>
         <div className={styles.navBrand}>
-          <img src={logoImg} alt="TransitOps" className={styles.logo} />
+          <img src="/logo.svg" alt="TransitOps" className={styles.logo} />
         </div>
         <div className={styles.navLinks}>
           <Link to="/quick-report" className={styles.quickLink}>
@@ -143,7 +142,7 @@ const LandingPage = () => {
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <div className={styles.footerBrand}>
-            <img src={logoImg} alt="TransitOps" style={{ maxHeight: '24px', opacity: 0.7 }} />
+            <img src="/logo.svg" alt="TransitOps" style={{ maxHeight: '24px', opacity: 0.7 }} />
             <p>Smart Transport Operations Platform</p>
           </div>
           <div className={styles.footerLinks}>
