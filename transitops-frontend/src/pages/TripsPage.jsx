@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useTrips } from '../hooks/useTrips.js';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -11,8 +11,22 @@ import styles from './TripsPage.module.css';
 
 const TripsPage = () => {
   const { hasRole } = useAuth();
+  const { searchQuery } = useOutletContext() || {};
   const [statusFilter, setStatusFilter] = useState('');
   const { data: trips, loading, error, refetch } = useTrips(statusFilter ? { status: statusFilter } : {});
+
+  const filteredTrips = (trips || []).filter((trip) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      (trip.trip_number && trip.trip_number.toLowerCase().includes(query)) ||
+      (trip.source && trip.source.toLowerCase().includes(query)) ||
+      (trip.destination && trip.destination.toLowerCase().includes(query)) ||
+      (trip.driver_name && trip.driver_name.toLowerCase().includes(query)) ||
+      (trip.registration_number && trip.registration_number.toLowerCase().includes(query))
+    );
+  });
+
   const [completeModal, setCompleteModal] = useState(null);
   const [completeData, setCompleteData] = useState({ final_odometer: '', fuel_consumed: '', fuel_cost: '' });
   const [submitting, setSubmitting] = useState(false);
@@ -136,10 +150,10 @@ const TripsPage = () => {
               </tr>
             </thead>
             <tbody>
-              {!trips?.length && (
+              {!filteredTrips?.length && (
                 <tr><td colSpan="8" style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '3rem' }}>No trips found.</td></tr>
               )}
-              {trips?.map((t) => (
+              {filteredTrips?.map((t) => (
                 <tr key={t.id}>
                   <td data-label="Route">
                     <div className={styles.route}>

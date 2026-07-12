@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -23,10 +23,22 @@ const driverSchema = z.object({
 
 const DriversPage = () => {
   const { hasRole } = useAuth();
+  const { searchQuery } = useOutletContext() || {};
   const [filters, setFilters] = useState({ status: '' });
   const { data: drivers, loading, error, refetch } = useDrivers(
     Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
   );
+
+  const filteredDrivers = (drivers || []).filter((d) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      (d.name && d.name.toLowerCase().includes(query)) ||
+      (d.license_number && d.license_number.toLowerCase().includes(query)) ||
+      (d.license_category && d.license_category.toLowerCase().includes(query)) ||
+      (d.contact_number && d.contact_number.toLowerCase().includes(query))
+    );
+  });
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -103,10 +115,10 @@ const DriversPage = () => {
               </tr>
             </thead>
             <tbody>
-              {!drivers?.length && (
+              {!filteredDrivers?.length && (
                 <tr><td colSpan={canManage ? 8 : 7} style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '3rem' }}>No drivers found.</td></tr>
               )}
-              {drivers?.map((d) => {
+              {filteredDrivers?.map((d) => {
                 const licSt = getLicenseStatus(d);
                 return (
                   <tr key={d.id}>

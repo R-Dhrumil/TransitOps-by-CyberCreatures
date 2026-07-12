@@ -17,10 +17,9 @@ const PAGE_TITLES = {
   '/reports': 'Reports & Analytics',
 };
 
-const Navbar = ({ onMenuToggle }) => {
+const Navbar = ({ searchQuery, onSearchChange, onMenuToggle }) => {
   const { user } = useAuth();
   const location = useLocation();
-  const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const notifRef = useRef(null);
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
@@ -62,8 +61,8 @@ const Navbar = ({ onMenuToggle }) => {
             type="text"
             className={styles.searchInput}
             placeholder="Search operations..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery || ''}
+            onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
             aria-label="Search operations"
           />
         </div>

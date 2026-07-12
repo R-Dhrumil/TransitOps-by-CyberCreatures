@@ -29,7 +29,7 @@ const AppLayout = () => {
       <div className={styles.main}>
         <Navbar onMenuToggle={toggleSidebar} />
         <main className={styles.content}>
-          <Outlet />
+          <Outlet context={{ searchQuery }} />
         </main>
       </div>
     </div>
