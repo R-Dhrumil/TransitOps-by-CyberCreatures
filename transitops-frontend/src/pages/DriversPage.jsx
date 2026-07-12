@@ -43,9 +43,12 @@ const DriversPage = () => {
   const [editing, setEditing] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm({
     resolver: zodResolver(driverSchema),
   });
+
+  const watchExpiry = watch('license_expiry_date');
+  const isExpired = watchExpiry && new Date(watchExpiry) < new Date(new Date().setHours(0,0,0,0));
 
   const openAdd = () => { setEditing(null); reset({}); setShowModal(true); };
   const openEdit = (d) => { setEditing(d); reset({ ...d, license_expiry_date: d.license_expiry_date?.slice(0, 10) }); setShowModal(true); };
@@ -198,11 +201,11 @@ const DriversPage = () => {
                   <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                     <label className="form-label">Status</label>
                     <select className="form-select" {...register('status')}>
-                      <option>Available</option>
-                      <option>On Trip</option>
-                      <option>Off Duty</option>
-                      <option>Suspended</option>
-                      <option>Retired</option>
+                      <option value="Available" disabled={isExpired}>Available {isExpired ? '(Expired)' : ''}</option>
+                      <option value="On Trip">On Trip</option>
+                      <option value="Off Duty">Off Duty</option>
+                      <option value="Suspended">Suspended</option>
+                      <option value="Retired">Retired</option>
                     </select>
                   </div>
                 )}

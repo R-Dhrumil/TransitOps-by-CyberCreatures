@@ -10,6 +10,7 @@ const { authenticate, requireRole } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
 const { maintenanceSchema } = require('../validators/schemas');
 const { notifyRole } = require('../services/notification.service');
+const { sendMaintenanceAlertEmail } = require('../utils/email');
 
 // GET /api/maintenance
 router.get('/', authenticate, asyncHandler(async (req, res) => {
@@ -45,6 +46,29 @@ router.post('/', authenticate, requireRole('fleet_manager'), validate(maintenanc
 
   await notifyRole('fleet_manager', 'Vehicle in Shop', `A vehicle has been placed in the shop for maintenance.`, 'warning', '/maintenance');
 
+  // Query vehicle details and dispatch emails asynchronously
+  pool.query('SELECT registration_number, name_model FROM vehicles WHERE id = $1', [result.vehicle_id])
+    .then(({ rows: vRows }) => {
+      if (vRows.length) {
+        const vehicle = vRows[0];
+        return pool.query("SELECT email FROM users WHERE role IN ('fleet_manager', 'dispatcher')")
+          .then(({ rows: userRows }) => {
+            const emails = userRows.map(u => u.email).filter(Boolean);
+            if (emails.length) {
+              return sendMaintenanceAlertEmail({
+                recipients: emails,
+                vehicleReg: vehicle.registration_number,
+                vehicleModel: vehicle.name_model,
+                status: 'Open',
+                description,
+                cost: cost ?? 0
+              });
+            }
+          });
+      }
+    })
+    .catch(err => console.error('[Email Maintenance] Failed to send maintenance email:', err));
+
   res.status(201).json({ success: true, data: result });
 }));
 
@@ -73,6 +97,29 @@ router.patch('/:id/close', authenticate, requireRole('fleet_manager'), asyncHand
   });
 
   await notifyRole('fleet_manager', 'Maintenance Complete', `A maintenance log has been closed.`, 'success', '/maintenance');
+
+  // Query vehicle details and dispatch emails asynchronously
+  pool.query('SELECT registration_number, name_model FROM vehicles WHERE id = $1', [result.vehicle_id])
+    .then(({ rows: vRows }) => {
+      if (vRows.length) {
+        const vehicle = vRows[0];
+        return pool.query("SELECT email FROM users WHERE role IN ('fleet_manager', 'dispatcher')")
+          .then(({ rows: userRows }) => {
+            const emails = userRows.map(u => u.email).filter(Boolean);
+            if (emails.length) {
+              return sendMaintenanceAlertEmail({
+                recipients: emails,
+                vehicleReg: vehicle.registration_number,
+                vehicleModel: vehicle.name_model,
+                status: 'Closed',
+                description: result.description,
+                cost: result.cost
+              });
+            }
+          });
+      }
+    })
+    .catch(err => console.error('[Email Maintenance] Failed to send maintenance email:', err));
 
   res.json({ success: true, data: result });
 }));

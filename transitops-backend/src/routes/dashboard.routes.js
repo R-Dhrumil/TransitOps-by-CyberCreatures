@@ -8,6 +8,10 @@ const { authenticate } = require('../middleware/auth');
 
 // GET /api/dashboard/kpis
 router.get('/kpis', authenticate, asyncHandler(async (req, res) => {
+  // Sync expired drivers to suspended status to keep stats accurate
+  await pool.query(`UPDATE drivers SET status = 'Suspended' WHERE license_expiry_date < CURRENT_DATE AND status = 'Available'`);
+
+  // Fire queries concurrently
   const [
     vehicleStats,
     driverStats,
