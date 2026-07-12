@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useTheme } from '../../context/ThemeContext.jsx';
 import AppIcon from '../ui/AppIcon.jsx';
@@ -19,11 +19,14 @@ const PAGE_TITLES = {
 };
 
 const Navbar = ({ onMenuToggle, searchQuery, onSearchChange, collapsed }) => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const notifRef = useRef(null);
+  const profileRef = useRef(null);
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   useEffect(() => {
@@ -31,10 +34,18 @@ const Navbar = ({ onMenuToggle, searchQuery, onSearchChange, collapsed }) => {
       if (notifRef.current && !notifRef.current.contains(event.target)) {
         setShowNotifications(false);
       }
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const title = PAGE_TITLES[location.pathname] || 'TransitOps';
 
@@ -105,8 +116,26 @@ const Navbar = ({ onMenuToggle, searchQuery, onSearchChange, collapsed }) => {
             />
           )}
         </div>
-        <div className={styles.userChip}>
+        <div 
+          className={styles.userChip}
+          ref={profileRef}
+          onMouseEnter={() => setShowProfileMenu(true)}
+          onMouseLeave={() => setShowProfileMenu(false)}
+          onClick={() => setShowProfileMenu(!showProfileMenu)}
+        >
           <span className={styles.avatar}>{user?.full_name?.[0]?.toUpperCase()}</span>
+          
+          {showProfileMenu && (
+            <div className={styles.profileMenu} onClick={(e) => e.stopPropagation()}>
+              <div className={styles.profileMenuHeader}>
+                <span className={styles.profileName}>{user?.full_name}</span>
+                <span className={styles.profileRole}>{user?.role?.replace(/_/g, ' ')}</span>
+              </div>
+              <button className={styles.profileLogoutBtn} onClick={handleLogout}>
+                <AppIcon name="logout" size={16} /> Sign Out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
