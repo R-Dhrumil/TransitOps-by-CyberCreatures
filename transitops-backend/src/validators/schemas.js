@@ -1,0 +1,91 @@
+'use strict';
+
+const { z } = require('zod');
+
+const registerSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  full_name: z.string().min(2),
+  role: z.enum(['fleet_manager', 'driver', 'safety_officer', 'financial_analyst']),
+});
+
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1, 'Password is required'),
+});
+
+const vehicleSchema = z.object({
+  registration_number: z.string().min(1),
+  name_model: z.string().min(1),
+  type: z.string().min(1),
+  max_load_capacity: z.number().positive(),
+  acquisition_cost: z.number().nonnegative(),
+  odometer: z.number().nonnegative().optional(),
+  region: z.string().optional(),
+});
+
+const vehicleUpdateSchema = vehicleSchema.partial();
+
+const driverSchema = z.object({
+  name: z.string().min(2),
+  license_number: z.string().min(5),
+  license_category: z.string().min(2),
+  license_expiry_date: z.string().refine((val) => !isNaN(Date.parse(val)), 'Invalid date'),
+  contact_number: z.string().optional(),
+  safety_score: z.number().min(0).max(100).optional(),
+});
+
+const driverUpdateSchema = driverSchema.partial().extend({
+  status: z.enum(['Available', 'On Trip', 'Off Duty', 'Suspended']).optional(),
+});
+
+const tripSchema = z.object({
+  source: z.string().min(1),
+  destination: z.string().min(1),
+  vehicle_id: z.string().uuid(),
+  driver_id: z.string().uuid(),
+  cargo_weight: z.number().positive(),
+  planned_distance: z.number().positive(),
+});
+
+const tripCompleteSchema = z.object({
+  final_odometer: z.number().nonnegative(),
+  fuel_consumed: z.number().positive().optional(),
+  fuel_cost: z.number().positive().optional(),
+});
+
+const maintenanceSchema = z.object({
+  vehicle_id: z.string().uuid(),
+  description: z.string().min(5),
+  cost: z.number().nonnegative().optional(),
+});
+
+const fuelLogSchema = z.object({
+  vehicle_id: z.string().uuid(),
+  trip_id: z.string().uuid().optional(),
+  liters: z.number().positive(),
+  cost: z.number().positive(),
+  log_date: z.string().optional(),
+});
+
+const expenseSchema = z.object({
+  vehicle_id: z.string().uuid().optional(),
+  category: z.string().min(1),
+  amount: z.number().positive(),
+  expense_date: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+module.exports = {
+  registerSchema,
+  loginSchema,
+  vehicleSchema,
+  vehicleUpdateSchema,
+  driverSchema,
+  driverUpdateSchema,
+  tripSchema,
+  tripCompleteSchema,
+  maintenanceSchema,
+  fuelLogSchema,
+  expenseSchema,
+};

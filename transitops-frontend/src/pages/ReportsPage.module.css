@@ -1,0 +1,40 @@
+.reportTabs {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+.reportTab {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: all var(--transition-fast);
+}
+.reportTab:hover { background: var(--color-bg-hover); color: var(--color-text-primary); }
+.activeTab { background: var(--color-brand-glow); color: var(--color-brand-light); border-color: rgba(14,165,233,0.3); }
+
+.chartSection {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+}
+.chartSection h3 { margin-bottom: var(--space-5); }
+.chartRow { display: flex; gap: var(--space-4); align-items: center; }
+
+.tooltip {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+}
+.tooltipLabel { font-weight: 600; margin-bottom: var(--space-2); }
+
+@media (max-width: 768px) { .chartRow { flex-direction: column; } }
