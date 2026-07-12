@@ -39,7 +39,7 @@ const LandingPage = () => {
             <AppIcon name="alert" size={16} /> Driver Quick Report
           </Link>
           <Link to="/login" className={styles.loginBtn}>
-            Go to Console <AppIcon name="arrowRight" size={16} />
+            Try it <AppIcon name="arrowRight" size={16} />
           </Link>
         </div>
       </nav>
