@@ -34,7 +34,7 @@ const TripsPage = () => {
 
   const canCreate = hasRole('driver', 'fleet_manager', 'dispatcher');
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm({
     resolver: zodResolver(schema)
   });
 
@@ -100,22 +100,6 @@ const TripsPage = () => {
         </div>
 
         <div className={styles.formBody}>
-          <div className={styles.stepper}>
-            <div className={styles.stepperFill} style={{ width: '10%' }}></div>
-            <div className={`${styles.step} ${styles.active}`}>
-              <div className={styles.stepDot}></div>
-              <span className={styles.stepLabel}>Draft</span>
-            </div>
-            <div className={styles.step}>
-              <div className={styles.stepDot}></div>
-              <span className={styles.stepLabel}>Dispatched</span>
-            </div>
-            <div className={styles.step}>
-              <div className={styles.stepDot}></div>
-              <span className={styles.stepLabel}>Completed</span>
-            </div>
-          </div>
-
           <form id="dispatchForm" onSubmit={handleSubmit(onSubmitDraft)}>
             {/* Routing Details */}
             <div className={styles.sectionTitle}>Routing Details</div>
@@ -226,6 +210,17 @@ const TripsPage = () => {
           >
             <AppIcon name="rocket" size={14} /> Dispatch Trip
           </button>
+        </div>
+        {/* Dynamic Form Progress Line */}
+        <div style={{ height: '3px', background: 'var(--color-bg-surface)', width: '100%', borderBottomLeftRadius: 'var(--radius-lg)', borderBottomRightRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+          <div 
+            style={{ 
+              height: '100%', 
+              width: `${Math.round((Object.values(watch()).filter(v => !!v).length / 6) * 100)}%`, 
+              background: 'var(--color-info)',
+              transition: 'width 0.3s ease'
+            }} 
+          />
         </div>
       </div>
 
