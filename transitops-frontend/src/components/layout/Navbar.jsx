@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import AppIcon from '../ui/AppIcon.jsx';
 import styles from './Navbar.module.css';
 
 const PAGE_TITLES = {
@@ -23,7 +24,7 @@ const Navbar = ({ onMenuToggle }) => {
     <header className={styles.navbar}>
       <div className={styles.left}>
         <button className={styles.menuBtn} onClick={onMenuToggle} aria-label="Toggle menu">
-          ☰
+          <AppIcon name="menu" size={18} />
         </button>
         <h1 className={styles.pageTitle}>{title}</h1>
       </div>

@@ -7,6 +7,7 @@ import { useVehicles } from '../hooks/useVehicles.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
 import apiClient from '../lib/apiClient.js';
+import AppIcon from '../components/ui/AppIcon.jsx';
 
 const vehicleSchema = z.object({
   registration_number: z.string().min(1, 'Required'),
@@ -88,7 +89,7 @@ const VehiclesPage = () => {
       </div>
 
       {loading && <div className="loading-state"><div className="spinner" /><span>Loading vehicles…</span></div>}
-      {error && <div className="empty-state"><span>⚠️</span><p>Failed to load. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>}
+      {error && <div className="empty-state"><span><AppIcon name="alert" size={18} /></span><p>Failed to load. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>}
 
       {!loading && !error && (
         <div className="table-container">

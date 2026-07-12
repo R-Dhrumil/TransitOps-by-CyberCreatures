@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import useApi from '../hooks/useApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import apiClient from '../lib/apiClient.js';
+import AppIcon from '../components/ui/AppIcon.jsx';
 import styles from './FuelExpensesPage.module.css';
 
 const fuelSchema = z.object({
@@ -75,8 +76,8 @@ const FuelExpensesPage = () => {
 
       {/* Tab Switch */}
       <div className={styles.tabs}>
-        <button className={`${styles.tab} ${tab === 'fuel' ? styles.activeTab : ''}`} onClick={() => setTab('fuel')}>⛽ Fuel Logs</button>
-        <button className={`${styles.tab} ${tab === 'expenses' ? styles.activeTab : ''}`} onClick={() => setTab('expenses')}>💰 Expenses</button>
+        <button className={`${styles.tab} ${tab === 'fuel' ? styles.activeTab : ''}`} onClick={() => setTab('fuel')}><AppIcon name="fuel" size={14} /> Fuel Logs</button>
+        <button className={`${styles.tab} ${tab === 'expenses' ? styles.activeTab : ''}`} onClick={() => setTab('expenses')}><AppIcon name="dollar" size={14} /> Expenses</button>
       </div>
 
       {/* Fuel Logs */}

@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { useVehicles } from '../hooks/useVehicles.js';
 import { useDrivers } from '../hooks/useDrivers.js';
 import apiClient from '../lib/apiClient.js';
+import AppIcon from '../components/ui/AppIcon.jsx';
 import styles from './TripWizard.module.css';
 
 const STEPS = ['Route', 'Vehicle', 'Driver', 'Cargo'];
@@ -72,7 +73,7 @@ const TripWizard = () => {
         <div className={styles.progress}>
           {STEPS.map((s, i) => (
             <div key={s} className={`${styles.step} ${i <= step ? styles.active : ''} ${i < step ? styles.done : ''}`}>
-              <div className={styles.stepNum}>{i < step ? '✓' : i + 1}</div>
+              <div className={styles.stepNum}>{i < step ? <AppIcon name="check" size={14} /> : i + 1}</div>
               <span className={styles.stepLabel}>{s}</span>
             </div>
           ))}
@@ -136,7 +137,7 @@ const TripWizard = () => {
                         <strong>{d.name}</strong>
                         <span>{d.license_category} · Score: {d.safety_score}/100</span>
                         <span className={styles.selectCardMeta} style={{ color: expired ? 'var(--color-danger)' : 'var(--color-text-muted)' }}>
-                          Exp: {expiry.toLocaleDateString()} {expired ? '⚠️ EXPIRED' : ''}
+                          Exp: {expiry.toLocaleDateString()} {expired ? <><AppIcon name="alert" size={12} /> EXPIRED</> : ''}
                         </span>
                       </div>
                     </label>
@@ -173,13 +174,13 @@ const TripWizard = () => {
           {/* Navigation */}
           <div className={styles.nav}>
             <button type="button" className="btn btn-secondary" onClick={step === 0 ? () => navigate('/trips') : prev}>
-              {step === 0 ? '← Back' : '← Previous'}
+              <AppIcon name="arrowLeft" size={14} /> {step === 0 ? 'Back' : 'Previous'}
             </button>
             {step < STEPS.length - 1 ? (
-              <button type="button" className="btn btn-primary" onClick={next}>Next →</button>
+              <button type="button" className="btn btn-primary" onClick={next}>Next <AppIcon name="arrowRight" size={14} /></button>
             ) : (
               <button type="submit" className="btn btn-primary" disabled={submitting}>
-                {submitting ? 'Creating…' : '🚀 Create Trip'}
+                {submitting ? 'Creating…' : <><AppIcon name="rocket" size={14} /> Create Trip</>}
               </button>
             )}
           </div>

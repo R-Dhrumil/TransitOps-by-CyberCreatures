@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDashboard } from '../hooks/useDashboard.js';
 import KpiCard from '../components/ui/KpiCard.jsx';
+import AppIcon from '../components/ui/AppIcon.jsx';
 import styles from './DashboardPage.module.css';
 
 const DashboardPage = () => {
@@ -10,7 +11,7 @@ const DashboardPage = () => {
     <div className="loading-state"><div className="spinner" /><span>Loading dashboard…</span></div>
   );
   if (error) return (
-    <div className="empty-state"><span>⚠️</span><p>Failed to load dashboard. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>
+    <div className="empty-state"><span><AppIcon name="alert" size={18} /></span><p>Failed to load dashboard. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>
   );
 
   const v = data?.vehicles || {};
@@ -21,45 +22,45 @@ const DashboardPage = () => {
     <div className={styles.page}>
       <div className="page-header">
         <h2>Overview</h2>
-        <button className="btn btn-secondary btn-sm" onClick={refetch}>↻ Refresh</button>
+        <button className="btn btn-secondary btn-sm" onClick={refetch}><AppIcon name="refresh" size={14} /> Refresh</button>
       </div>
 
       {/* Vehicle KPIs */}
       <section className={styles.section}>
-        <h3 className={styles.sectionLabel}>🚛 Fleet Status</h3>
+        <h3 className={styles.sectionLabel}><AppIcon name="vehicle" size={16} /> Fleet Status</h3>
         <div className={styles.kpiGrid}>
-          <KpiCard title="Available" value={v.available} icon="✅" subtitle="Ready to dispatch" />
-          <KpiCard title="On Trip" value={v.on_trip} icon="🚛" subtitle="Currently deployed" />
-          <KpiCard title="In Maintenance" value={v.in_maintenance} icon="🔧" subtitle="Under repair" />
-          <KpiCard title="Total Vehicles" value={v.total} icon="🏭" subtitle={`${v.retired || 0} retired`} />
+          <KpiCard title="Available" value={v.available} icon={<AppIcon name="checkCircle" size={22} />} subtitle="Ready to dispatch" />
+          <KpiCard title="On Trip" value={v.on_trip} icon={<AppIcon name="vehicle" size={22} />} subtitle="Currently deployed" />
+          <KpiCard title="In Maintenance" value={v.in_maintenance} icon={<AppIcon name="maintenance" size={22} />} subtitle="Under repair" />
+          <KpiCard title="Total Vehicles" value={v.total} icon={<AppIcon name="factory" size={22} />} subtitle={`${v.retired || 0} retired`} />
         </div>
       </section>
 
       {/* Driver KPIs */}
       <section className={styles.section}>
-        <h3 className={styles.sectionLabel}>👤 Driver Status</h3>
+        <h3 className={styles.sectionLabel}><AppIcon name="users" size={16} /> Driver Status</h3>
         <div className={styles.kpiGrid}>
-          <KpiCard title="Available Drivers" value={d.available} icon="🟢" />
-          <KpiCard title="On Trip" value={d.on_trip} icon="🛣️" />
-          <KpiCard title="Off Duty" value={d.off_duty} icon="🔵" />
-          <KpiCard title="Suspended" value={d.suspended} icon="🔴" />
+          <KpiCard title="Available Drivers" value={d.available} icon={<AppIcon name="userCheck" size={22} />} />
+          <KpiCard title="On Trip" value={d.on_trip} icon={<AppIcon name="route" size={22} />} />
+          <KpiCard title="Off Duty" value={d.off_duty} icon={<AppIcon name="moon" size={22} />} />
+          <KpiCard title="Suspended" value={d.suspended} icon={<AppIcon name="userX" size={22} />} />
         </div>
       </section>
 
       {/* Trip KPIs */}
       <section className={styles.section}>
-        <h3 className={styles.sectionLabel}>🗺️ Trips</h3>
+        <h3 className={styles.sectionLabel}><AppIcon name="route" size={16} /> Trips</h3>
         <div className={styles.kpiGrid}>
-          <KpiCard title="Active Trips" value={t.active} icon="⚡" />
-          <KpiCard title="Pending (Draft)" value={t.pending} icon="⏳" />
-          <KpiCard title="Completed" value={t.completed} icon="✔️" />
-          <KpiCard title="Cancelled" value={t.cancelled} icon="✖️" />
+          <KpiCard title="Active Trips" value={t.active} icon={<AppIcon name="bolt" size={22} />} />
+          <KpiCard title="Pending (Draft)" value={t.pending} icon={<AppIcon name="clock" size={22} />} />
+          <KpiCard title="Completed" value={t.completed} icon={<AppIcon name="checkCircle" size={22} />} />
+          <KpiCard title="Cancelled" value={t.cancelled} icon={<AppIcon name="xCircle" size={22} />} />
         </div>
       </section>
 
       {/* Utilization */}
       <section className={styles.section}>
-        <h3 className={styles.sectionLabel}>📊 Fleet Utilization</h3>
+        <h3 className={styles.sectionLabel}><AppIcon name="reports" size={16} /> Fleet Utilization</h3>
         <div className={styles.utilizationCard}>
           <div className={styles.utilizationValue}>{data?.fleet_utilization_percent ?? 0}%</div>
           <div className={styles.utilizationBar}>

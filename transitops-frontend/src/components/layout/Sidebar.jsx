@@ -1,16 +1,17 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import AppIcon from '../ui/AppIcon.jsx';
 import styles from './Sidebar.module.css';
 
 const NAV_ITEMS = [
-  { path: '/dashboard',      label: 'Dashboard',       icon: '📊', roles: [] },
-  { path: '/vehicles',       label: 'Vehicles',         icon: '🚛', roles: [] },
-  { path: '/drivers',        label: 'Drivers',          icon: '👤', roles: [] },
-  { path: '/trips',          label: 'Trips',            icon: '🗺️', roles: [] },
-  { path: '/maintenance',    label: 'Maintenance',      icon: '🔧', roles: ['fleet_manager'] },
-  { path: '/fuel-expenses',  label: 'Fuel & Expenses',  icon: '⛽', roles: ['driver', 'fleet_manager', 'financial_analyst'] },
-  { path: '/reports',        label: 'Reports',          icon: '📈', roles: ['fleet_manager', 'financial_analyst', 'safety_officer'] },
+  { path: '/dashboard',      label: 'Dashboard',      icon: 'dashboard', roles: [] },
+  { path: '/vehicles',       label: 'Vehicles',       icon: 'vehicle', roles: [] },
+  { path: '/drivers',        label: 'Drivers',        icon: 'users', roles: [] },
+  { path: '/trips',          label: 'Trips',          icon: 'route', roles: [] },
+  { path: '/maintenance',    label: 'Maintenance',    icon: 'maintenance', roles: ['fleet_manager'] },
+  { path: '/fuel-expenses',  label: 'Fuel & Expenses', icon: 'fuel', roles: ['driver', 'fleet_manager', 'financial_analyst'] },
+  { path: '/reports',        label: 'Reports',        icon: 'reports', roles: ['fleet_manager', 'financial_analyst', 'safety_officer'] },
 ];
 
 const Sidebar = ({ collapsed, onToggle }) => {
@@ -29,7 +30,7 @@ const Sidebar = ({ collapsed, onToggle }) => {
   return (
     <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
       <div className={styles.brand}>
-        <span className={styles.logo}>🚌</span>
+        <span className={styles.logo}><AppIcon name="bus" size={22} /></span>
         {!collapsed && <span className={styles.brandName}>TransitOps</span>}
       </div>
 
@@ -43,7 +44,7 @@ const Sidebar = ({ collapsed, onToggle }) => {
             }
             title={collapsed ? item.label : undefined}
           >
-            <span className={styles.icon}>{item.icon}</span>
+            <span className={styles.icon}><AppIcon name={item.icon} size={18} /></span>
             {!collapsed && <span className={styles.label}>{item.label}</span>}
           </NavLink>
         ))}
@@ -57,12 +58,12 @@ const Sidebar = ({ collapsed, onToggle }) => {
           </div>
         )}
         <button className={styles.logoutBtn} onClick={handleLogout} title="Logout">
-          🚪 {!collapsed && 'Logout'}
+          <AppIcon name="logout" size={16} /> {!collapsed && 'Logout'}
         </button>
       </div>
 
       <button className={styles.collapseBtn} onClick={onToggle} aria-label="Toggle sidebar">
-        {collapsed ? '›' : '‹'}
+        <AppIcon name={collapsed ? 'arrowRight' : 'arrowLeft'} size={12} />
       </button>
     </aside>
   );

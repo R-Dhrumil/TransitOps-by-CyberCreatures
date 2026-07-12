@@ -1,14 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import AppIcon from '../components/ui/AppIcon.jsx';
 import styles from './LandingPage.module.css';
 
 const FEATURES = [
-  { icon: '🚛', title: 'Fleet Registry', desc: 'Track every vehicle — status, odometer, capacity, region — in one place.' },
-  { icon: '👤', title: 'Driver Management', desc: 'License expiry alerts, safety scores, and real-time availability.' },
-  { icon: '🗺️', title: 'Trip Dispatch', desc: 'Multi-step wizard with live validation. Atomic status transitions prevent double-booking.' },
-  { icon: '🔧', title: 'Maintenance Logs', desc: 'Open a repair record and the vehicle auto-moves to In Shop. Close it and it\'s Available again.' },
-  { icon: '⛽', title: 'Fuel & Expenses', desc: 'Per-trip fuel logging. Running operational cost per vehicle at a glance.' },
-  { icon: '📈', title: 'Analytics & Reports', desc: 'Fuel efficiency, fleet utilization, cost breakdown, ROI — with one-click CSV export.' },
+  { icon: 'vehicle', title: 'Fleet Registry', desc: 'Track every vehicle — status, odometer, capacity, region — in one place.' },
+  { icon: 'users', title: 'Driver Management', desc: 'License expiry alerts, safety scores, and real-time availability.' },
+  { icon: 'route', title: 'Trip Dispatch', desc: 'Multi-step wizard with live validation. Atomic status transitions prevent double-booking.' },
+  { icon: 'maintenance', title: 'Maintenance Logs', desc: 'Open a repair record and the vehicle auto-moves to In Shop. Close it and it\'s Available again.' },
+  { icon: 'fuel', title: 'Fuel & Expenses', desc: 'Per-trip fuel logging. Running operational cost per vehicle at a glance.' },
+  { icon: 'trend', title: 'Analytics & Reports', desc: 'Fuel efficiency, fleet utilization, cost breakdown, ROI — with one-click CSV export.' },
 ];
 
 const ROLES = [
@@ -22,8 +23,8 @@ const LandingPage = () => (
   <div className={styles.page}>
     {/* Nav */}
     <nav className={styles.nav}>
-      <div className={styles.navBrand}>🚌 <span>TransitOps</span></div>
-      <Link to="/login" className="btn btn-primary">Sign In →</Link>
+      <div className={styles.navBrand}><AppIcon name="bus" size={22} /> <span>TransitOps</span></div>
+      <Link to="/login" className="btn btn-primary">Sign In <AppIcon name="arrowRight" size={14} /></Link>
     </nav>
 
     {/* Hero */}
@@ -39,7 +40,7 @@ const LandingPage = () => (
         safety officers, and financial analysts — all in one powerful dashboard.
       </p>
       <div className={styles.heroActions}>
-        <Link to="/login" className="btn btn-primary">Get Started Free →</Link>
+        <Link to="/login" className="btn btn-primary">Get Started Free <AppIcon name="arrowRight" size={14} /></Link>
         <a href="#features" className="btn btn-secondary">See Features</a>
       </div>
       <div className={styles.heroStats}>
@@ -59,7 +60,7 @@ const LandingPage = () => (
       <div className={styles.featureGrid}>
         {FEATURES.map((f) => (
           <div key={f.title} className={styles.featureCard}>
-            <span className={styles.featureIcon}>{f.icon}</span>
+            <span className={styles.featureIcon}><AppIcon name={f.icon} size={28} /></span>
             <h3>{f.title}</h3>
             <p>{f.desc}</p>
           </div>
@@ -86,7 +87,7 @@ const LandingPage = () => (
       <div className={styles.ctaCard}>
         <h2>Ready to dispatch?</h2>
         <p>Sign in with a role-specific demo account and explore the full platform.</p>
-        <Link to="/login" className="btn btn-primary">Sign In Now →</Link>
+        <Link to="/login" className="btn btn-primary">Sign In Now <AppIcon name="arrowRight" size={14} /></Link>
       </div>
     </section>
 
