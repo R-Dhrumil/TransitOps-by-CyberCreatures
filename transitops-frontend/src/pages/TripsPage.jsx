@@ -283,13 +283,23 @@ const TripsPage = () => {
             </div>
 
             <div style={{ marginTop: 'var(--space-4)' }} className="form-group">
-              <label className="form-label">Photo URL</label>
+              <label className="form-label">Photo (Optional)</label>
               <input 
-                type="text" 
+                type="file" 
+                accept="image/*"
                 className="form-input" 
-                placeholder="https://example.com/photo.jpg"
-                value={reportData.photo_url}
-                onChange={(e) => setReportData((d) => ({ ...d, photo_url: e.target.value }))} 
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setReportData((d) => ({ ...d, photo_url: reader.result }));
+                    };
+                    reader.readAsDataURL(file);
+                  } else {
+                    setReportData((d) => ({ ...d, photo_url: '' }));
+                  }
+                }} 
               />
             </div>
 

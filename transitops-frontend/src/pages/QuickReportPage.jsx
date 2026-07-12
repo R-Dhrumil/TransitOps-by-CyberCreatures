@@ -222,14 +222,24 @@ export default function QuickReportPage() {
 
             <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}>
               <label className="form-label">
-                Photo URL (Optional) / फोटो लिंक (वैकल्पिक)
+                Photo / फोटो (Optional / वैकल्पिक)
               </label>
               <input
-                type="text"
+                type="file"
+                accept="image/*"
                 className="form-input"
-                placeholder="e.g. https://example.com/photo.jpg"
-                value={photoUrl}
-                onChange={(e) => setPhotoUrl(e.target.value)}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setPhotoUrl(reader.result);
+                    };
+                    reader.readAsDataURL(file);
+                  } else {
+                    setPhotoUrl('');
+                  }
+                }}
                 disabled={loading}
               />
             </div>
