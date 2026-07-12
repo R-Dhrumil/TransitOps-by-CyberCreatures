@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import AppIcon from '../components/ui/AppIcon.jsx';
 import styles from './LandingPage.module.css';
+import logoImg from '../assets/logo.svg';
 
 const FEATURES = [
   { icon: 'vehicle', title: 'Fleet Registry', desc: 'Track every vehicle — status, odometer, capacity, region — in one place.' },
@@ -24,7 +25,7 @@ const LandingPage = () => (
     {/* Nav */}
     <nav className={styles.nav}>
       <div className={styles.navBrand}>
-        <img src="/logo.png" alt="TransitOps" style={{ maxHeight: '32px', objectFit: 'contain' }} />
+        <img src={logoImg} alt="TransitOps" style={{ maxHeight: '32px', objectFit: 'contain' }} />
       </div>
       <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
         <Link to="/quick-report" className="btn btn-secondary" style={{ borderColor: '#f59e0b', color: '#f59e0b' }}>

@@ -6,6 +6,7 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext.jsx';
 import styles from './LoginPage.module.css';
+import logoImg from '../assets/logo.svg';
 
 const loginSchema = z.object({
   email: z.string().min(1, 'Email or Phone is required'),
@@ -60,7 +61,7 @@ const LoginPage = () => {
     <div className={styles.container}>
       <div className={styles.leftPanel}>
         <div style={{ marginBottom: 'var(--space-4)' }}>
-          <img src="/logo.png" alt="TransitOps Logo" style={{ maxWidth: '100%', maxHeight: '80px', objectFit: 'contain' }} />
+          <img src={logoImg} alt="TransitOps Logo" style={{ maxWidth: '100%', maxHeight: '80px', objectFit: 'contain' }} />
         </div>
         <p className={styles.tagline}>Smart Transport Operations Platform</p>
 
