@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import AppIcon from '../ui/AppIcon.jsx';
@@ -21,6 +21,20 @@ const Navbar = ({ onMenuToggle }) => {
   const { user } = useAuth();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notifRef = useRef(null);
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const title = PAGE_TITLES[location.pathname] || 'TransitOps';
 
   return (
@@ -57,8 +71,24 @@ const Navbar = ({ onMenuToggle }) => {
 
       {/* Right — Actions + Avatar */}
       <div className={styles.right}>
-        <div className={styles.notifContainer}>
-          <NotificationDropdown />
+        <div className={styles.notifContainer} ref={notifRef}>
+          <button 
+            className={styles.notifBtn} 
+            onClick={() => setShowNotifications(!showNotifications)}
+            aria-label="Notifications"
+          >
+            <AppIcon name="bell" size={20} />
+            {unreadCount > 0 && <span className={styles.notifBadge}>{unreadCount}</span>}
+          </button>
+          
+          {showNotifications && (
+            <NotificationDropdown 
+              notifications={notifications || []} 
+              onMarkAsRead={markAsRead} 
+              onMarkAllAsRead={markAllAsRead} 
+              onClose={() => setShowNotifications(false)}
+            />
+          )}
         </div>
         <div className={styles.userChip}>
           <span className={styles.avatar}>{user?.full_name?.[0]?.toUpperCase()}</span>
