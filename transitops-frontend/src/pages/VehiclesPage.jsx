@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -25,10 +26,23 @@ const VEHICLE_TYPES = ['Heavy Truck', 'Medium Truck', 'Light Truck', 'Van', 'Bus
 
 const VehiclesPage = () => {
   const { hasRole } = useAuth();
+  const { searchQuery } = useOutletContext() || {};
   const [filters, setFilters] = useState({ status: '', type: '', region: '' });
   const { data: vehicles, loading, error, refetch } = useVehicles(
     Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
   );
+
+  const filteredVehicles = (vehicles || []).filter((v) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      (v.registration_number && v.registration_number.toLowerCase().includes(query)) ||
+      (v.name_model && v.name_model.toLowerCase().includes(query)) ||
+      (v.type && v.type.toLowerCase().includes(query)) ||
+      (v.region && v.region.toLowerCase().includes(query))
+    );
+  });
+
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -122,10 +136,10 @@ const VehiclesPage = () => {
               </tr>
             </thead>
             <tbody>
-              {!vehicles?.length && (
+              {!filteredVehicles?.length && (
                 <tr><td colSpan={canManage ? 8 : 7} style={{ textAlign: 'center', color: 'var(--color-text-muted)', padding: '3rem' }}>No vehicles found.</td></tr>
               )}
-              {vehicles?.map((v) => (
+              {filteredVehicles?.map((v) => (
                 <tr key={v.id}>
                   <td><strong>{v.registration_number}</strong></td>
                   <td>{v.name_model}</td>

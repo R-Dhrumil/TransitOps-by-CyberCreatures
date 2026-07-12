@@ -6,14 +6,19 @@ import styles from './AppLayout.module.css';
 
 const AppLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <div className={`${styles.layout} ${sidebarCollapsed ? styles.collapsed : ''}`}>
       <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed((c) => !c)} />
       <div className={styles.main}>
-        <Navbar onMenuToggle={() => setSidebarCollapsed((c) => !c)} />
+        <Navbar 
+          searchQuery={searchQuery} 
+          onSearchChange={setSearchQuery} 
+          onMenuToggle={() => setSidebarCollapsed((c) => !c)} 
+        />
         <main className={styles.content}>
-          <Outlet />
+          <Outlet context={{ searchQuery }} />
         </main>
       </div>
     </div>

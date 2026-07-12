@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { useDashboard } from '../hooks/useDashboard.js';
 import { useTrips } from '../hooks/useTrips.js';
 import styles from './DashboardPage.module.css';
@@ -13,6 +13,7 @@ const STATUS_MAP = {
 };
 
 const DashboardPage = () => {
+  const { searchQuery } = useOutletContext() || {};
   const { data: dashboardData, loading: dashLoading, error: dashError, refetch: refetchDash } = useDashboard();
   const { data: tripsData, loading: tripsLoading, error: tripsError, refetch: refetchTrips } = useTrips();
 
@@ -40,7 +41,21 @@ const DashboardPage = () => {
   const availPct = totalVehicles > 0 ? Math.round((availableCount / totalVehicles) * 100) : 0;
   const maintPct = totalVehicles > 0 ? Math.round((maintCount / totalVehicles) * 100) : 0;
 
-  const recentTrips = (tripsData || []).slice(0, 5);
+  const filteredTrips = (tripsData || []).filter((trip) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      (trip.trip_number && trip.trip_number.toLowerCase().includes(query)) ||
+      (trip.source && trip.source.toLowerCase().includes(query)) ||
+      (trip.destination && trip.destination.toLowerCase().includes(query)) ||
+      (trip.driver_name && trip.driver_name.toLowerCase().includes(query)) ||
+      (trip.vehicle_number && trip.vehicle_number.toLowerCase().includes(query)) ||
+      (trip.vehicle && trip.vehicle.toLowerCase().includes(query)) ||
+      (trip.driver && trip.driver.toLowerCase().includes(query))
+    );
+  });
+
+  const recentTrips = filteredTrips.slice(0, 5);
 
   const pad = (n) => String(n ?? 0).padStart(2, '0');
 
