@@ -28,11 +28,21 @@ const app = express();
 app.use(helmet());
 
 // ── CORS ─────────────────────────────────────────────────────
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',');
+const normalizeOrigin = (value = '') => value.trim().replace(/\/+$/, '');
+
+const allowedOrigins = (
+  process.env.CORS_ORIGIN ||
+  (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5173')
+)
+  .split(',')
+  .map(normalizeOrigin)
+  .filter(Boolean);
+
 app.use(cors({
   origin: (origin, callback) => {
+    const normalizedOrigin = normalizeOrigin(origin || '');
     // Allow requests with no origin (mobile, curl, etc.) in dev
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
       callback(new Error(`Origin ${origin} not allowed by CORS`));
