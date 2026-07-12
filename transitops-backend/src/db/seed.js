@@ -11,7 +11,7 @@ const pool = require('./pool');
  */
 const SEED_USERS = [
   { email: 'manager@transitops.dev',   password: 'Manager@123',   full_name: 'Alex Manager',    role: 'fleet_manager' },
-  { email: 'driver@transitops.dev',    password: 'Driver@123',    full_name: 'Sam Driver',       role: 'driver' },
+  { email: 'driver@transitops.dev',    phone: '9876543210',       password: 'Driver@123',    full_name: 'Sam Driver',       role: 'driver' },
   { email: 'safety@transitops.dev',    password: 'Safety@123',    full_name: 'Jordan Safety',    role: 'safety_officer' },
   { email: 'finance@transitops.dev',   password: 'Finance@123',   full_name: 'Taylor Finance',   role: 'financial_analyst' },
   { email: 'dispatcher@transitops.dev',password: 'Dispatcher@123',full_name: 'Dev Dispatcher',   role: 'dispatcher' },
@@ -37,10 +37,10 @@ const seed = async () => {
   for (const u of SEED_USERS) {
     const hash = await bcrypt.hash(u.password, 12);
     await pool.query(
-      `INSERT INTO users (email, password_hash, full_name, role)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO users (email, phone, password_hash, full_name, role)
+       VALUES ($1, $2, $3, $4, $5)
        ON CONFLICT (email) DO NOTHING`,
-      [u.email, hash, u.full_name, u.role]
+      [u.email, u.phone || null, hash, u.full_name, u.role]
     );
     console.log(`[Seed] User seeded: ${u.email} (${u.role})`);
   }

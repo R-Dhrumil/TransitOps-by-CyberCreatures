@@ -34,6 +34,7 @@ EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 CREATE TABLE IF NOT EXISTS users (
   id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email          TEXT UNIQUE NOT NULL,
+  phone          TEXT UNIQUE,
   password_hash  TEXT NOT NULL,
   full_name      TEXT NOT NULL,
   role           user_role NOT NULL,
