@@ -175,13 +175,13 @@
     display: flex;
   }
 
-  .searchInput {
-    width: 160px;
+  .searchWrapper {
+    display: none;
   }
 }
 
 @media (max-width: 480px) {
-  .searchWrapper {
+  .userChip .name, .userChip .roleBadge {
     display: none;
   }
 }

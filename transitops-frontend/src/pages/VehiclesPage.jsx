@@ -127,15 +127,15 @@ const VehiclesPage = () => {
               )}
               {vehicles?.map((v) => (
                 <tr key={v.id}>
-                  <td><strong>{v.registration_number}</strong></td>
-                  <td>{v.name_model}</td>
-                  <td>{v.type}</td>
-                  <td>{Number(v.max_load_capacity).toLocaleString()}</td>
-                  <td>{Number(v.odometer).toLocaleString()}</td>
-                  <td>{v.region || '—'}</td>
-                  <td><StatusBadge status={v.status} /></td>
+                  <td data-label="Reg. Number"><strong>{v.registration_number}</strong></td>
+                  <td data-label="Model">{v.name_model}</td>
+                  <td data-label="Type">{v.type}</td>
+                  <td data-label="Max Load (kg)">{Number(v.max_load_capacity).toLocaleString()}</td>
+                  <td data-label="Odometer (km)">{Number(v.odometer).toLocaleString()}</td>
+                  <td data-label="Region">{v.region || '—'}</td>
+                  <td data-label="Status"><StatusBadge status={v.status} /></td>
                   {canManage && (
-                    <td style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                    <td data-label="Actions" style={{ display: 'flex', gap: 'var(--space-2)' }}>
                       <button className="btn btn-secondary btn-sm" onClick={() => openEdit(v)}>Edit</button>
                       {v.status !== 'Retired' && (
                         <button className="btn btn-danger btn-sm" onClick={() => handleRetire(v.id)}>Retire</button>

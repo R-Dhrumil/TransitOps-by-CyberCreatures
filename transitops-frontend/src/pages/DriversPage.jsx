@@ -110,19 +110,19 @@ const DriversPage = () => {
                 const licSt = getLicenseStatus(d);
                 return (
                   <tr key={d.id}>
-                    <td><strong>{d.name}</strong></td>
-                    <td>{d.license_number}</td>
-                    <td>{d.license_category}</td>
-                    <td style={{ color: licSt.color, fontWeight: licSt.label === 'EXPIRED' ? 700 : 400 }}>{licSt.label}</td>
-                    <td>
+                    <td data-label="Name"><strong>{d.name}</strong></td>
+                    <td data-label="License No.">{d.license_number}</td>
+                    <td data-label="Category">{d.license_category}</td>
+                    <td data-label="Expiry" style={{ color: licSt.color, fontWeight: licSt.label === 'EXPIRED' ? 700 : 400 }}>{licSt.label}</td>
+                    <td data-label="Safety Score">
                       <span style={{ color: d.safety_score >= 90 ? 'var(--color-success)' : d.safety_score >= 70 ? 'var(--color-warning)' : 'var(--color-danger)', fontWeight: 600 }}>
                         {d.safety_score}/100
                       </span>
                     </td>
-                    <td>{d.contact_number || '—'}</td>
-                    <td><StatusBadge status={d.status} /></td>
+                    <td data-label="Contact">{d.contact_number || '—'}</td>
+                    <td data-label="Status"><StatusBadge status={d.status} /></td>
                      {canManage && (
-                      <td>
+                      <td data-label="Actions">
                         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
                           <button className="btn btn-secondary btn-sm" onClick={() => openEdit(d)}>Edit</button>
                           {d.status === 'Available' && (

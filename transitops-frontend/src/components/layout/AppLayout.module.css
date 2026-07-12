@@ -20,7 +20,28 @@
   margin-top: var(--navbar-height);
   overflow-y: auto;
 }
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 90; /* Just below sidebar's 100 */
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @media (max-width: 768px) {
   .main { margin-left: 0; }
+  .layout.collapsed .main { margin-left: 0; }
   .content { padding: var(--space-4); }
+  
+  /* Prevent body scroll when sidebar is open */
+  .layout:not(.collapsed).isMobile {
+    overflow: hidden;
+    height: 100vh;
+  }
 }

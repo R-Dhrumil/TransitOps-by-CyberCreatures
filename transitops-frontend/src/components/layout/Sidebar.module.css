@@ -129,3 +129,19 @@
   z-index: 10;
 }
 .collapseBtn:hover { background: var(--color-brand); color: white; border-color: var(--color-brand); }
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(0);
+    width: var(--sidebar-width);
+  }
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+    width: var(--sidebar-width);
+  }
+  
+  /* Ensure full brand is always shown on mobile */
+  .brandName { display: block; }
+  .label { display: inline-block; }
+  .userInfo { display: flex; }
+}

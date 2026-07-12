@@ -86,14 +86,14 @@ const MaintenancePage = () => {
               )}
               {logs?.map((log) => (
                 <tr key={log.id}>
-                  <td><strong>{log.registration_number}</strong><br /><span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{log.name_model}</span></td>
-                  <td>{log.description}</td>
-                  <td>{Number(log.cost).toLocaleString()}</td>
-                  <td><StatusBadge status={log.status} /></td>
-                  <td style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{new Date(log.created_at).toLocaleDateString()}</td>
-                  <td style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{log.closed_at ? new Date(log.closed_at).toLocaleDateString() : '—'}</td>
+                  <td data-label="Vehicle"><strong>{log.registration_number}</strong><br /><span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{log.name_model}</span></td>
+                  <td data-label="Description">{log.description}</td>
+                  <td data-label="Cost (₹)">{Number(log.cost).toLocaleString()}</td>
+                  <td data-label="Status"><StatusBadge status={log.status} /></td>
+                  <td data-label="Opened" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{new Date(log.created_at).toLocaleDateString()}</td>
+                  <td data-label="Closed" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{log.closed_at ? new Date(log.closed_at).toLocaleDateString() : '—'}</td>
                   {canManage && (
-                    <td>
+                    <td data-label="Actions">
                       {log.status === 'Open' && (
                         <button className="btn btn-success btn-sm" onClick={() => handleClose(log.id)}>Close Log</button>
                       )}
