@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { useTheme } from '../../context/ThemeContext.jsx';
 import AppIcon from '../ui/AppIcon.jsx';
 import NotificationDropdown from '../ui/NotificationDropdown.jsx';
 import { useNotifications } from '../../hooks/useNotifications.js';
@@ -17,8 +18,9 @@ const PAGE_TITLES = {
   '/reports': 'Reports & Analytics',
 };
 
-const Navbar = ({ onMenuToggle, searchQuery, onSearchChange }) => {
+const Navbar = ({ onMenuToggle, searchQuery, onSearchChange, collapsed }) => {
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [showNotifications, setShowNotifications] = useState(false);
   const notifRef = useRef(null);
@@ -37,12 +39,16 @@ const Navbar = ({ onMenuToggle, searchQuery, onSearchChange }) => {
   const title = PAGE_TITLES[location.pathname] || 'TransitOps';
 
   return (
-    <header className={styles.navbar}>
+    <header className={`${styles.navbar} ${collapsed ? styles.collapsed : ''}`}>
       {/* Left — Search bar */}
       <div className={styles.left}>
         <button className={styles.menuBtn} onClick={onMenuToggle} aria-label="Toggle menu">
           <AppIcon name="menu" size={18} />
         </button>
+
+        <div className={styles.mobileBrand}>
+          <img src="/logo.svg" alt="TransitOps" />
+        </div>
 
         <div className={styles.searchWrapper}>
           <svg
@@ -70,6 +76,16 @@ const Navbar = ({ onMenuToggle, searchQuery, onSearchChange }) => {
 
       {/* Right — Actions + Avatar */}
       <div className={styles.right}>
+        {/* Theme Toggle */}
+        <button 
+          className={styles.iconBtn} 
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          <AppIcon name={theme === 'dark' ? 'sun' : 'moon'} size={20} />
+        </button>
+
         <div className={styles.notifContainer} ref={notifRef}>
           <button 
             className={styles.iconBtn} 

@@ -251,7 +251,7 @@ const TripsPage = () => {
               onClick={() => setBoardFilter('All')}
               style={{ background: boardFilter === 'All' ? 'var(--color-bg-hover)' : '' }}
             >
-              <AppIcon name="menu" size={16} />
+              <AppIcon name="list" size={16} />
             </button>
           </div>
         </div>
@@ -294,7 +294,7 @@ const TripsPage = () => {
                 <div className={styles.cardTop}>
                   <div className={styles.cardInfo}>
                     <div className={styles.truckIconWrapper}>
-                      <AppIcon name="truck" size={18} />
+                      <AppIcon name="vehicle" size={18} />
                     </div>
                     <div>
                       <h4 className={styles.tripId}>{trip.trip_number || trip.id.split('-')[0].toUpperCase()}</h4>

@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 import ProtectedRoute from './components/layout/ProtectedRoute.jsx';
 import AppLayout from './components/layout/AppLayout.jsx';
 import PageLoader from './components/ui/PageLoader.jsx';
@@ -51,35 +52,37 @@ const NotFoundPage       = lazyWithRetry(() => import('./pages/NotFoundPage.jsx'
 export default function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <BrowserRouter>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/"       element={<LandingPage />} />
-              <Route path="/login"  element={<LoginPage />} />
-              <Route path="/quick-report" element={<QuickReportPage />} />
+      <ThemeProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Public routes */}
+                <Route path="/"       element={<LandingPage />} />
+                <Route path="/login"  element={<LoginPage />} />
+                <Route path="/quick-report" element={<QuickReportPage />} />
 
-              {/* Protected routes — all rendered inside AppLayout (sidebar + navbar) */}
-              <Route element={<ProtectedRoute />}>
-                <Route element={<AppLayout />}>
-                  <Route path="/dashboard"    element={<DashboardPage />} />
-                  <Route path="/vehicles"     element={<VehiclesPage />} />
-                  <Route path="/drivers"      element={<DriversPage />} />
-                  <Route path="/trips"        element={<TripsPage />} />
-                  <Route path="/trips/new"    element={<TripWizard />} />
-                  <Route path="/maintenance"  element={<MaintenancePage />} />
-                  <Route path="/fuel-expenses" element={<FuelExpensesPage />} />
-                  <Route path="/reports"      element={<ReportsPage />} />
+                {/* Protected routes — all rendered inside AppLayout (sidebar + navbar) */}
+                <Route element={<ProtectedRoute />}>
+                  <Route element={<AppLayout />}>
+                    <Route path="/dashboard"    element={<DashboardPage />} />
+                    <Route path="/vehicles"     element={<VehiclesPage />} />
+                    <Route path="/drivers"      element={<DriversPage />} />
+                    <Route path="/trips"        element={<TripsPage />} />
+                    <Route path="/trips/new"    element={<TripWizard />} />
+                    <Route path="/maintenance"  element={<MaintenancePage />} />
+                    <Route path="/fuel-expenses" element={<FuelExpensesPage />} />
+                    <Route path="/reports"      element={<ReportsPage />} />
+                  </Route>
                 </Route>
-              </Route>
 
-              {/* Catch-all */}
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-      </AuthProvider>
+                {/* Catch-all */}
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </AuthProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }
