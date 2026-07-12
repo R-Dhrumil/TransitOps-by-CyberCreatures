@@ -280,7 +280,7 @@ const TripsPage = () => {
               etaText = 'CANCELLED';
             } else {
               // Simulated dynamic status based on %
-              if (pct < 15) { displayStatus = 'LOADING'; statusClass = styles.loading; etaText = 'Wait: 45m'; }
+              if (pct < 15) { displayStatus = 'LOADING'; statusClass = styles.loading; etaText = ''; }
               else if (pct > 90) { displayStatus = 'UNLOADING'; statusClass = styles.unloading; etaText = 'ETA: ARRIVED'; }
             }
 
@@ -315,18 +315,6 @@ const TripsPage = () => {
                   </div>
                 </div>
 
-                <div className={styles.cardBottom}>
-                  <span>{trip.status === 'Draft' ? '0%' : str}</span>
-                  <div className={styles.progressBarContainer}>
-                    <div 
-                      className={`${styles.progressBarFill} ${statusClass}`} 
-                      style={{ width: trip.status === 'Draft' ? '0%' : str }} 
-                    />
-                  </div>
-                  <span>
-                    {trip.status === 'Draft' ? '0' : distDone}mi
-                  </span>
-                </div>
               </div>
             );
           })}
