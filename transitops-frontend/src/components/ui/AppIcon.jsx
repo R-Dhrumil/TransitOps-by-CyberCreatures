@@ -30,6 +30,8 @@ const ICON_PATHS = {
   rocket: ['M4.5 16.5 3 21l4.5-1.5', 'M14 10 5 19', 'M15 9 6 18', 'M12 3a13 13 0 0 1 9 9l-6 6a13 13 0 0 1-9-9Z'],
   factory: ['M2 21h20', 'M5 21V11l6-3v3l6-3v13', 'M9 21v-4', 'M13 21v-4', 'M17 21v-4'],
   download: ['M12 3v12', 'm7-5-7 7-7-7', 'M5 21h14'],
+  filter: ['M22 3H2l8 9.46V19l4 2v-8.54L22 3z'],
+  list: ['M8 6h13', 'M8 12h13', 'M8 18h13', 'M3 6h.01', 'M3 12h.01', 'M3 18h.01'],
 };
 
 const AppIcon = ({ name, size = 18, className = '', strokeWidth = 1.8 }) => {
