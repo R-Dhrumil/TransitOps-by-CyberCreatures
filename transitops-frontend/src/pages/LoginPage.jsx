@@ -59,8 +59,9 @@ const LoginPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.leftPanel}>
-        <div className={styles.logoBox}></div>
-        <h1 className={styles.brand}>TransitOps</h1>
+        <div style={{ marginBottom: 'var(--space-4)' }}>
+          <img src="/logo.png" alt="TransitOps Logo" style={{ maxWidth: '100%', maxHeight: '80px', objectFit: 'contain' }} />
+        </div>
         <p className={styles.tagline}>Smart Transport Operations Platform</p>
 
         <p className={styles.rolesTitle}>One login, five roles:</p>

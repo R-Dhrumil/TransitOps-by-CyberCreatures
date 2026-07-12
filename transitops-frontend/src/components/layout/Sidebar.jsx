@@ -31,8 +31,11 @@ const Sidebar = ({ collapsed, onToggle, isMobile }) => {
   return (
     <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
       <div className={styles.brand}>
-        <span className={styles.logo}><AppIcon name="bus" size={22} /></span>
-        {(!collapsed || isMobile) && <span className={styles.brandName}>TransitOps</span>}
+        {collapsed && !isMobile ? (
+          <span className={styles.logo}><AppIcon name="bus" size={22} /></span>
+        ) : (
+          <img src="/logo.png" alt="TransitOps" style={{ maxHeight: '32px', width: 'auto', objectFit: 'contain' }} />
+        )}
       </div>
 
       <nav className={styles.nav}>
