@@ -19,6 +19,7 @@ export default function QuickReportPage() {
   const [vehicleNo, setVehicleNo] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeTrip, setActiveTrip] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
 
   // Form Fields
   const [selectedIncident, setSelectedIncident] = useState('');
@@ -30,6 +31,7 @@ export default function QuickReportPage() {
   // Search active trip
   const handleSearchVehicle = async (e) => {
     e.preventDefault();
+    setErrorMsg('');
     if (!vehicleNo.trim()) {
       toast.error('Please enter a vehicle registration number.');
       return;
@@ -42,7 +44,9 @@ export default function QuickReportPage() {
       setStep(1);
       toast.success('Active trip found!');
     } catch (err) {
-      toast.error(err.response?.data?.error?.message || 'No active trip found for this vehicle.');
+      const msg = err.response?.data?.error?.message || 'No active trip found for this vehicle.';
+      setErrorMsg(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -140,9 +144,39 @@ export default function QuickReportPage() {
               disabled={loading}
               autoFocus
             />
-            <button type="submit" className={`btn btn-primary ${styles.searchBtn}`} disabled={loading}>
+             <button type="submit" className={`btn btn-primary ${styles.searchBtn}`} disabled={loading}>
               {loading ? 'Finding...' : <><AppIcon name="arrowRight" size={18} /> Find My Trip / मेरी यात्रा खोजें</>}
             </button>
+
+            {errorMsg && (
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.12)',
+                border: '1px dashed rgba(239, 68, 68, 0.4)',
+                borderRadius: 'var(--radius-lg)',
+                padding: 'var(--space-4)',
+                color: '#f87171',
+                fontSize: 'var(--font-size-sm)',
+                lineHeight: '1.5',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+                textAlign: 'left'
+              }}>
+                <span style={{ fontSize: '1.2rem', marginTop: '-2px' }}>❌</span>
+                <div>
+                  <strong style={{ color: '#ef4444', display: 'block' }}>Search Failed / खोज विफल:</strong>
+                  <p style={{ margin: '4px 0 0 0', color: '#fca5a5' }}>
+                    {errorMsg === 'No active trip found for this vehicle.' 
+                      ? 'No active trip found for this vehicle. Ensure the vehicle registration number is correct and the trip is dispatched.' 
+                      : errorMsg}
+                  </p>
+                  <p style={{ margin: '8px 0 0 0', fontSize: '11px', color: '#94a3b8', borderTop: '1px solid rgba(239, 68, 68, 0.2)', paddingTop: '6px' }}>
+                    वाहन नंबर की जांच करें। सुनिश्चित करें कि यात्रा 'Dispatched' (शुरू) स्थिति में है।
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className={styles.portalLink}>
               <Link to="/login" style={{ fontSize: '12px' }}>Go back to login portal</Link>
             </div>
