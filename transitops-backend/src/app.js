@@ -18,6 +18,7 @@ const fuelRoutes = require('./routes/fuel.routes');
 const expenseRoutes = require('./routes/expense.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const reportRoutes = require('./routes/report.routes');
+const notificationRoutes = require('./routes/notification.routes');
 
 // Middleware imports
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
@@ -88,6 +89,7 @@ app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/fuel-logs', fuelRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // ── Error Handling ────────────────────────────────────────────
 app.use(notFoundHandler);

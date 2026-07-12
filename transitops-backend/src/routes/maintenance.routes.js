@@ -9,6 +9,7 @@ const AppError = require('../utils/AppError');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
 const { maintenanceSchema } = require('../validators/schemas');
+const { notifyRole } = require('../services/notification.service');
 
 // GET /api/maintenance
 router.get('/', authenticate, asyncHandler(async (req, res) => {
@@ -42,6 +43,8 @@ router.post('/', authenticate, requireRole('fleet_manager'), validate(maintenanc
     return logRows[0];
   });
 
+  await notifyRole('fleet_manager', 'Vehicle in Shop', `A vehicle has been placed in the shop for maintenance.`, 'warning', '/maintenance');
+
   res.status(201).json({ success: true, data: result });
 }));
 
@@ -68,6 +71,8 @@ router.patch('/:id/close', authenticate, requireRole('fleet_manager'), asyncHand
     const { rows: updated } = await client.query('SELECT * FROM maintenance_logs WHERE id = $1', [log.id]);
     return updated[0];
   });
+
+  await notifyRole('fleet_manager', 'Maintenance Complete', `A maintenance log has been closed.`, 'success', '/maintenance');
 
   res.json({ success: true, data: result });
 }));
