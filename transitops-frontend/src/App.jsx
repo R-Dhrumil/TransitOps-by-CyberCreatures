@@ -6,18 +6,46 @@ import AppLayout from './components/layout/AppLayout.jsx';
 import PageLoader from './components/ui/PageLoader.jsx';
 import ErrorBoundary from './components/ui/ErrorBoundary.jsx';
 
+const isChunkLoadError = (error) => {
+  const message = String(error?.message || error || '');
+  return (
+    message.includes('Failed to fetch dynamically imported module') ||
+    message.includes('Importing a module script failed') ||
+    message.includes('Loading chunk')
+  );
+};
+
+const lazyWithRetry = (importer, key) =>
+  lazy(async () => {
+    try {
+      return await importer();
+    } catch (error) {
+      const storageKey = `chunk-reload:${key}`;
+      const hasRetried = sessionStorage.getItem(storageKey) === '1';
+
+      if (isChunkLoadError(error) && !hasRetried) {
+        sessionStorage.setItem(storageKey, '1');
+        window.location.reload();
+        // Keep suspense pending while reload is triggered.
+        return new Promise(() => {});
+      }
+
+      throw error;
+    }
+  });
+
 // Lazy-load pages for code splitting
-const LandingPage        = lazy(() => import('./pages/LandingPage.jsx'));
-const LoginPage          = lazy(() => import('./pages/LoginPage.jsx'));
-const DashboardPage      = lazy(() => import('./pages/DashboardPage.jsx'));
-const VehiclesPage       = lazy(() => import('./pages/VehiclesPage.jsx'));
-const DriversPage        = lazy(() => import('./pages/DriversPage.jsx'));
-const TripsPage          = lazy(() => import('./pages/TripsPage.jsx'));
-const TripWizard         = lazy(() => import('./pages/TripWizard.jsx'));
-const MaintenancePage    = lazy(() => import('./pages/MaintenancePage.jsx'));
-const FuelExpensesPage   = lazy(() => import('./pages/FuelExpensesPage.jsx'));
-const ReportsPage        = lazy(() => import('./pages/ReportsPage.jsx'));
-const NotFoundPage       = lazy(() => import('./pages/NotFoundPage.jsx'));
+const LandingPage        = lazyWithRetry(() => import('./pages/LandingPage.jsx'), 'landing');
+const LoginPage          = lazyWithRetry(() => import('./pages/LoginPage.jsx'), 'login');
+const DashboardPage      = lazyWithRetry(() => import('./pages/DashboardPage.jsx'), 'dashboard');
+const VehiclesPage       = lazyWithRetry(() => import('./pages/VehiclesPage.jsx'), 'vehicles');
+const DriversPage        = lazyWithRetry(() => import('./pages/DriversPage.jsx'), 'drivers');
+const TripsPage          = lazyWithRetry(() => import('./pages/TripsPage.jsx'), 'trips');
+const TripWizard         = lazyWithRetry(() => import('./pages/TripWizard.jsx'), 'trip-wizard');
+const MaintenancePage    = lazyWithRetry(() => import('./pages/MaintenancePage.jsx'), 'maintenance');
+const FuelExpensesPage   = lazyWithRetry(() => import('./pages/FuelExpensesPage.jsx'), 'fuel-expenses');
+const ReportsPage        = lazyWithRetry(() => import('./pages/ReportsPage.jsx'), 'reports');
+const NotFoundPage       = lazyWithRetry(() => import('./pages/NotFoundPage.jsx'), 'not-found');
 
 export default function App() {
   return (

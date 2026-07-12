@@ -8,7 +8,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const AppError = require('../utils/AppError');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
-const { tripSchema, tripCompleteSchema } = require('../validators/schemas');
+const { tripSchema, tripCompleteSchema, incidentSchema } = require('../validators/schemas');
 
 // GET /api/trips
 router.get('/', authenticate, asyncHandler(async (req, res) => {
@@ -21,7 +21,8 @@ router.get('/', authenticate, asyncHandler(async (req, res) => {
     SELECT t.*,
            v.registration_number, v.name_model,
            d.name AS driver_name,
-           u.full_name AS created_by_name
+           u.full_name AS created_by_name,
+           (SELECT COUNT(*)::int FROM trip_incidents WHERE trip_id = t.id) AS incident_count
     FROM trips t
     LEFT JOIN vehicles v ON t.vehicle_id = v.id
     LEFT JOIN drivers  d ON t.driver_id  = d.id
@@ -39,7 +40,8 @@ router.get('/:id', authenticate, asyncHandler(async (req, res) => {
     SELECT t.*,
            v.registration_number, v.name_model, v.max_load_capacity,
            d.name AS driver_name, d.license_number,
-           u.full_name AS created_by_name
+           u.full_name AS created_by_name,
+           (SELECT COUNT(*)::int FROM trip_incidents WHERE trip_id = t.id) AS incident_count
     FROM trips t
     LEFT JOIN vehicles v ON t.vehicle_id = v.id
     LEFT JOIN drivers  d ON t.driver_id  = d.id
@@ -52,7 +54,7 @@ router.get('/:id', authenticate, asyncHandler(async (req, res) => {
 }));
 
 // POST /api/trips — driver only (creates as Draft)
-router.post('/', authenticate, requireRole('driver', 'fleet_manager'), validate(tripSchema), asyncHandler(async (req, res) => {
+router.post('/', authenticate, requireRole('driver', 'fleet_manager', 'dispatcher'), validate(tripSchema), asyncHandler(async (req, res) => {
   const { source, destination, vehicle_id, driver_id, cargo_weight, planned_distance } = req.validatedBody;
 
   // Validate cargo <= vehicle capacity
@@ -87,7 +89,7 @@ router.post('/', authenticate, requireRole('driver', 'fleet_manager'), validate(
 }));
 
 // PATCH /api/trips/:id/dispatch — Draft → Dispatched (atomic)
-router.patch('/:id/dispatch', authenticate, requireRole('driver', 'fleet_manager'), asyncHandler(async (req, res) => {
+router.patch('/:id/dispatch', authenticate, requireRole('driver', 'fleet_manager', 'dispatcher'), asyncHandler(async (req, res) => {
   const result = await withTransaction(async (client) => {
     // Row-lock to prevent race conditions
     const { rows: tripRows } = await client.query(
@@ -126,7 +128,7 @@ router.patch('/:id/dispatch', authenticate, requireRole('driver', 'fleet_manager
 }));
 
 // PATCH /api/trips/:id/complete — Dispatched → Completed (atomic)
-router.patch('/:id/complete', authenticate, requireRole('driver', 'fleet_manager'), validate(tripCompleteSchema), asyncHandler(async (req, res) => {
+router.patch('/:id/complete', authenticate, requireRole('driver', 'fleet_manager', 'dispatcher'), validate(tripCompleteSchema), asyncHandler(async (req, res) => {
   const { final_odometer, fuel_consumed, fuel_cost } = req.validatedBody;
 
   const result = await withTransaction(async (client) => {
@@ -168,7 +170,7 @@ router.patch('/:id/complete', authenticate, requireRole('driver', 'fleet_manager
 }));
 
 // PATCH /api/trips/:id/cancel — Dispatched → Cancelled (atomic)
-router.patch('/:id/cancel', authenticate, requireRole('driver', 'fleet_manager'), asyncHandler(async (req, res) => {
+router.patch('/:id/cancel', authenticate, requireRole('driver', 'fleet_manager', 'dispatcher'), asyncHandler(async (req, res) => {
   const result = await withTransaction(async (client) => {
     const { rows: tripRows } = await client.query(
       'SELECT * FROM trips WHERE id = $1 FOR UPDATE', [req.params.id]
@@ -191,6 +193,40 @@ router.patch('/:id/cancel', authenticate, requireRole('driver', 'fleet_manager')
   });
 
   res.json({ success: true, data: result });
+}));
+
+// POST /api/trips/:id/incidents — Log a new incident
+router.post('/:id/incidents', authenticate, validate(incidentSchema), asyncHandler(async (req, res) => {
+  const { incident_type, location, photo_url, comments } = req.validatedBody;
+  
+  // Verify trip exists
+  const { rows: tripRows } = await pool.query('SELECT * FROM trips WHERE id = $1', [req.params.id]);
+  if (!tripRows.length) throw new AppError('Trip not found.', 404);
+
+  const { rows } = await pool.query(`
+    INSERT INTO trip_incidents (trip_id, reported_by, incident_type, location, photo_url, comments)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING *
+  `, [req.params.id, req.user.id, incident_type, location, photo_url, comments]);
+
+  res.status(201).json({ success: true, data: rows[0] });
+}));
+
+// GET /api/trips/:id/incidents — Get all incidents for a specific trip
+router.get('/:id/incidents', authenticate, asyncHandler(async (req, res) => {
+  // Verify trip exists
+  const { rows: tripRows } = await pool.query('SELECT * FROM trips WHERE id = $1', [req.params.id]);
+  if (!tripRows.length) throw new AppError('Trip not found.', 404);
+
+  const { rows } = await pool.query(`
+    SELECT ti.*, u.full_name AS reporter_name
+    FROM trip_incidents ti
+    LEFT JOIN users u ON ti.reported_by = u.id
+    WHERE ti.trip_id = $1
+    ORDER BY ti.created_at DESC
+  `, [req.params.id]);
+
+  res.json({ success: true, data: rows });
 }));
 
 module.exports = router;

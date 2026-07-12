@@ -8,8 +8,11 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- ── Enums ────────────────────────────────────────────────────
 DO $$ BEGIN
-  CREATE TYPE user_role AS ENUM ('fleet_manager','driver','safety_officer','financial_analyst');
+  CREATE TYPE user_role AS ENUM ('fleet_manager','driver','safety_officer','financial_analyst','dispatcher');
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Ensure 'dispatcher' is added if type already exists
+ALTER TYPE user_role ADD VALUE IF NOT EXISTS 'dispatcher';
 
 DO $$ BEGIN
   CREATE TYPE vehicle_status AS ENUM ('Available','On Trip','In Shop','Retired');
@@ -143,3 +146,18 @@ CREATE OR REPLACE TRIGGER update_vehicles_updated_at
 CREATE OR REPLACE TRIGGER update_drivers_updated_at
   BEFORE UPDATE ON drivers
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ── Trip Incidents ────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS trip_incidents (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  trip_id        UUID REFERENCES trips(id) ON DELETE CASCADE NOT NULL,
+  reported_by    UUID REFERENCES users(id) ON DELETE SET NULL,
+  incident_type  TEXT NOT NULL,
+  location       TEXT,
+  photo_url      TEXT,
+  comments       TEXT,
+  created_at     TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_trip_incidents_trip ON trip_incidents(trip_id);
+

@@ -7,6 +7,8 @@ import { useVehicles } from '../hooks/useVehicles.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
 import apiClient from '../lib/apiClient.js';
+import AppIcon from '../components/ui/AppIcon.jsx';
+import ConfirmModal from '../components/ui/ConfirmModal.jsx';
 
 const vehicleSchema = z.object({
   registration_number: z.string().min(1, 'Required'),
@@ -29,6 +31,7 @@ const VehiclesPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(vehicleSchema),
@@ -56,12 +59,18 @@ const VehiclesPage = () => {
   };
 
   const handleRetire = async (id) => {
-    if (!confirm('Retire this vehicle? It will no longer be available for dispatch.')) return;
-    try {
-      await apiClient.delete(`/api/vehicles/${id}`);
-      toast.success('Vehicle retired.');
-      refetch();
-    } catch {}
+    setConfirmDialog({
+      isOpen: true,
+      message: 'Retire this vehicle? It will no longer be available for dispatch.',
+      onConfirm: async () => {
+        setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+        try {
+          await apiClient.delete(`/api/vehicles/${id}`);
+          toast.success('Vehicle retired.');
+          refetch();
+        } catch {}
+      }
+    });
   };
 
   const canManage = hasRole('fleet_manager');
@@ -88,7 +97,7 @@ const VehiclesPage = () => {
       </div>
 
       {loading && <div className="loading-state"><div className="spinner" /><span>Loading vehicles…</span></div>}
-      {error && <div className="empty-state"><span>⚠️</span><p>Failed to load. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>}
+      {error && <div className="empty-state"><span><AppIcon name="alert" size={18} /></span><p>Failed to load. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>}
 
       {!loading && !error && (
         <div className="table-container">
@@ -185,6 +194,13 @@ const VehiclesPage = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmDialog.isOpen}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };

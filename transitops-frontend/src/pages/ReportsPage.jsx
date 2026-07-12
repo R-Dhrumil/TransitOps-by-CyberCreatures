@@ -6,6 +6,7 @@ import {
 import useApi from '../hooks/useApi.js';
 import apiClient from '../lib/apiClient.js';
 import toast from 'react-hot-toast';
+import AppIcon from '../components/ui/AppIcon.jsx';
 import styles from './ReportsPage.module.css';
 
 const CHART_COLORS = ['#0ea5e9', '#22c55e', '#f59e0b', '#a78bfa', '#ef4444', '#06b6d4'];
@@ -31,10 +32,10 @@ const ReportsPage = () => {
   };
 
   const REPORTS = [
-    { id: 'fuel-efficiency', label: '⛽ Fuel Efficiency', loading: fLoading },
-    { id: 'utilization',     label: '📊 Utilization',     loading: uLoading },
-    { id: 'cost',            label: '💰 Cost Breakdown',  loading: cLoading },
-    { id: 'roi',             label: '📈 ROI Analysis',    loading: rLoading },
+    { id: 'fuel-efficiency', label: 'Fuel Efficiency', icon: 'fuel', loading: fLoading },
+    { id: 'utilization',     label: 'Utilization', icon: 'reports', loading: uLoading },
+    { id: 'cost',            label: 'Cost Breakdown', icon: 'dollar', loading: cLoading },
+    { id: 'roi',             label: 'ROI Analysis', icon: 'trend', loading: rLoading },
   ];
 
   const CustomTooltip = ({ active, payload, label }) => {
@@ -53,7 +54,7 @@ const ReportsPage = () => {
     <div>
       <div className="page-header">
         <h2>Reports & Analytics</h2>
-        <button className="btn btn-secondary" onClick={() => handleExport(activeReport)}>⬇ Export CSV</button>
+        <button className="btn btn-secondary" onClick={() => handleExport(activeReport)}><AppIcon name="download" size={14} /> Export CSV</button>
       </div>
 
       {/* Report tabs */}
@@ -64,7 +65,7 @@ const ReportsPage = () => {
             className={`${styles.reportTab} ${activeReport === r.id ? styles.activeTab : ''}`}
             onClick={() => setActiveReport(r.id)}
           >
-            {r.label}
+            <AppIcon name={r.icon} size={14} /> {r.label}
           </button>
         ))}
       </div>

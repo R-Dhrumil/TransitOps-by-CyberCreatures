@@ -7,6 +7,8 @@ import useApi from '../hooks/useApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
 import apiClient from '../lib/apiClient.js';
+import AppIcon from '../components/ui/AppIcon.jsx';
+import ConfirmModal from '../components/ui/ConfirmModal.jsx';
 
 const maintenanceSchema = z.object({
   vehicle_id: z.string().uuid('Select a vehicle'),
@@ -20,6 +22,7 @@ const MaintenancePage = () => {
   const { data: vehicles } = useApi('/api/vehicles');
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(maintenanceSchema),
@@ -43,12 +46,18 @@ const MaintenancePage = () => {
   };
 
   const handleClose = async (id) => {
-    if (!confirm('Close this maintenance record? Vehicle will be set back to Available.')) return;
-    try {
-      await apiClient.patch(`/api/maintenance/${id}/close`);
-      toast.success('Maintenance closed. Vehicle is Available again.');
-      refetch();
-    } catch {}
+    setConfirmDialog({
+      isOpen: true,
+      message: 'Close this maintenance record? Vehicle will be set back to Available.',
+      onConfirm: async () => {
+        setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+        try {
+          await apiClient.patch(`/api/maintenance/${id}/close`);
+          toast.success('Maintenance closed. Vehicle is Available again.');
+          refetch();
+        } catch {}
+      }
+    });
   };
 
   return (
@@ -59,7 +68,7 @@ const MaintenancePage = () => {
       </div>
 
       {loading && <div className="loading-state"><div className="spinner" /><span>Loading…</span></div>}
-      {error && <div className="empty-state"><span>⚠️</span><p>Failed to load. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>}
+      {error && <div className="empty-state"><span><AppIcon name="alert" size={18} /></span><p>Failed to load. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>}
 
       {!loading && !error && (
         <div className="table-container">
@@ -136,6 +145,13 @@ const MaintenancePage = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmDialog.isOpen}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };

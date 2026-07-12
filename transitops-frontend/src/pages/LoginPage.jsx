@@ -14,7 +14,8 @@ const loginSchema = z.object({
 
 const DEMO_ACCOUNTS = [
   { role: 'Fleet Manager',      email: 'manager@transitops.dev',  password: 'Manager@123' },
-  { role: 'Dispatcher',         email: 'driver@transitops.dev',   password: 'Driver@123' },
+  { role: 'Dispatcher',         email: 'dispatcher@transitops.dev',password: 'Dispatcher@123' },
+  { role: 'Driver',             email: 'driver@transitops.dev',    password: 'Driver@123' },
   { role: 'Safety Officer',     email: 'safety@transitops.dev',   password: 'Safety@123' },
   { role: 'Financial Analyst',  email: 'finance@transitops.dev',  password: 'Finance@123' },
 ];
@@ -62,10 +63,11 @@ const LoginPage = () => {
         <h1 className={styles.brand}>TransitOps</h1>
         <p className={styles.tagline}>Smart Transport Operations Platform</p>
 
-        <p className={styles.rolesTitle}>One login, four roles:</p>
+        <p className={styles.rolesTitle}>One login, five roles:</p>
         <ul className={styles.rolesList}>
           <li>Fleet Manager</li>
           <li>Dispatcher</li>
+          <li>Driver</li>
           <li>Safety Officer</li>
           <li>Financial Analyst</li>
         </ul>
@@ -138,7 +140,8 @@ const LoginPage = () => {
             <p>Access is scoped by role after login:</p>
             <ul>
               <li>• Fleet Manager → Fleet, Maintenance</li>
-              <li>• Dispatcher → Dashboard, Trips</li>
+              <li>• Dispatcher → Dashboard, Trips (Assign & Dispatch)</li>
+              <li>• Driver → Trips (Complete), Fuel Logs</li>
               <li>• Safety Officer → Drivers, Compliance</li>
               <li>• Financial Analyst → Fuel & Expenses, Analytics</li>
             </ul>

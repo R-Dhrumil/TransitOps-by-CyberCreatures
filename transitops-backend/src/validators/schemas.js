@@ -6,7 +6,7 @@ const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   full_name: z.string().min(2),
-  role: z.enum(['fleet_manager', 'driver', 'safety_officer', 'financial_analyst']),
+  role: z.enum(['fleet_manager', 'driver', 'safety_officer', 'financial_analyst', 'dispatcher']),
 });
 
 const loginSchema = z.object({
@@ -76,6 +76,21 @@ const expenseSchema = z.object({
   notes: z.string().optional(),
 });
 
+const incidentSchema = z.object({
+  incident_type: z.enum([
+    'Traffic Jam',
+    'Accident/Collision',
+    'Vehicle Breakdown',
+    'Fuel Issue',
+    'Bad Weather',
+    'Road Closed',
+    'Location Share'
+  ]),
+  location: z.string().optional(),
+  photo_url: z.string().optional(),
+  comments: z.string().optional(),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -88,4 +103,5 @@ module.exports = {
   maintenanceSchema,
   fuelLogSchema,
   expenseSchema,
+  incidentSchema,
 };

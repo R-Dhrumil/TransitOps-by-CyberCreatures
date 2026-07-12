@@ -7,6 +7,7 @@ import { useDrivers } from '../hooks/useDrivers.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
 import apiClient from '../lib/apiClient.js';
+import AppIcon from '../components/ui/AppIcon.jsx';
 
 const driverSchema = z.object({
   name: z.string().min(2, 'Min 2 characters'),
@@ -80,7 +81,7 @@ const DriversPage = () => {
       </div>
 
       {loading && <div className="loading-state"><div className="spinner" /><span>Loading drivers…</span></div>}
-      {error && <div className="empty-state"><span>⚠️</span><p>Failed to load. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>}
+      {error && <div className="empty-state"><span><AppIcon name="alert" size={18} /></span><p>Failed to load. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>}
 
       {!loading && !error && (
         <div className="table-container">
