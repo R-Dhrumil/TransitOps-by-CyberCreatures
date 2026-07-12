@@ -10,6 +10,7 @@ const { authenticate, requireRole } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
 const { tripSchema, tripCompleteSchema, incidentSchema } = require('../validators/schemas');
 const { notifyRole, notifyAllExceptRole } = require('../services/notification.service');
+const { sendTripDispatchEmail, sendIncidentAlertEmail } = require('../utils/email');
 
 // GET /api/trips
 router.get('/', authenticate, asyncHandler(async (req, res) => {
@@ -129,6 +130,36 @@ router.patch('/:id/dispatch', authenticate, requireRole('driver', 'fleet_manager
 
   await notifyRole('fleet_manager', 'Trip Dispatched', `Trip to ${result.destination} has been dispatched.`, 'success', '/trips');
 
+  // Asynchronously query details and send dispatch email to the driver
+  pool.query(`
+    SELECT t.trip_number, t.source, t.destination, t.cargo_weight, t.planned_distance,
+           v.registration_number, v.name_model,
+           d.name AS driver_name, d.contact_number,
+           u.email AS driver_email
+    FROM trips t
+    LEFT JOIN vehicles v ON t.vehicle_id = v.id
+    LEFT JOIN drivers d ON t.driver_id = d.id
+    LEFT JOIN users u ON d.contact_number = u.phone
+    WHERE t.id = $1
+  `, [result.id])
+  .then(({ rows: detailRows }) => {
+    if (detailRows.length && detailRows[0].driver_email) {
+      const detail = detailRows[0];
+      return sendTripDispatchEmail({
+        driverEmail: detail.driver_email,
+        driverName: detail.driver_name,
+        tripNumber: detail.trip_number,
+        source: detail.source,
+        destination: detail.destination,
+        vehicleReg: detail.registration_number,
+        vehicleModel: detail.name_model,
+        cargoWeight: detail.cargo_weight,
+        plannedDistance: detail.planned_distance
+      });
+    }
+  })
+  .catch(err => console.error('[Email Dispatch] Failed to send trip dispatch email:', err));
+
   res.json({ success: true, data: result });
 }));
 
@@ -217,6 +248,24 @@ router.post('/:id/incidents', authenticate, validate(incidentSchema), asyncHandl
   `, [req.params.id, req.user.id, incident_type, location, photo_url, comments]);
 
   await notifyAllExceptRole('driver', 'New Incident Reported', `A new ${incident_type} incident was reported on Trip #${req.params.id}.`, 'warning', `/trips`);
+
+  // Query safety officers and fleet managers for email notification
+  pool.query("SELECT email FROM users WHERE role IN ('safety_officer', 'fleet_manager')")
+    .then(({ rows: userRows }) => {
+      const emails = userRows.map(u => u.email).filter(Boolean);
+      if (emails.length) {
+        return sendIncidentAlertEmail({
+          recipients: emails,
+          tripId: req.params.id,
+          reporterName: req.user.full_name,
+          incidentType,
+          location,
+          comments,
+          photoUrl: photo_url
+        });
+      }
+    })
+    .catch(err => console.error('[Email Incident] Failed to send incident email notification:', err));
 
   res.status(201).json({ success: true, data: rows[0] });
 }));
