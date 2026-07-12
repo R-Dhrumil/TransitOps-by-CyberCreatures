@@ -76,6 +76,11 @@
 .statCard_purple  { border-color: rgba(139, 92, 246, 0.3);  background: rgba(139, 92, 246, 0.05); }
 .statCard_brand   { border-color: var(--color-brand-dark);  background: var(--color-brand-glow); }
 
+.statCardActive {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
 .statNum {
   font-size: var(--font-size-2xl);
   font-weight: 700;
@@ -92,6 +97,7 @@
   font-family: var(--font-mono);
 }
 
+
 /* ── Result Count ────────────────────────────────────────────── */
 .resultCount {
   font-size: var(--font-size-xs);
@@ -100,6 +106,30 @@
   margin-left: auto;
   white-space: nowrap;
 }
+
+/* ── Search wrapper ──────────────────────────────────────────── */
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 280px;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--color-text-muted);
+  pointer-events: none;
+  flex-shrink: 0;
+  display: flex;
+}
+
+.searchInput {
+  padding-left: calc(var(--space-3) + 15px + var(--space-2)) !important;
+  width: 100%;
+}
+
 
 /* ── Member Cell ─────────────────────────────────────────────── */
 .memberCell {
@@ -186,18 +216,57 @@
 
 .actionBtn { font-size: 11px; }
 
+/* Icon-only square button */
+.iconBtn {
+  padding: var(--space-1) var(--space-2) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 .lockedLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   font-style: italic;
 }
+
 
 /* ── Self Row ─────────────────────────────────────────────────── */
 .selfRow td {
   background: var(--color-brand-glow);
 }
 
+/* ── Modal title with icon ───────────────────────────────────── */
+.modalTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-xl);
+}
+
+.modalTitleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-glow);
+  color: var(--color-brand-light);
+  flex-shrink: 0;
+}
+
+.modalTitleIconDanger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
 /* ── Modal internals ─────────────────────────────────────────── */
+
 .formStack { display: flex; flex-direction: column; gap: var(--space-4); }
 
 .modalIcon { margin-right: var(--space-2); }
