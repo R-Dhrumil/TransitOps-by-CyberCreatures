@@ -36,7 +36,11 @@ router.post('/login', validate(loginSchema), asyncHandler(async (req, res) => {
   const { email, password } = req.validatedBody;
 
   const { rows } = await pool.query(
-    'SELECT id, email, phone, password_hash, full_name, role FROM users WHERE email = $1 OR phone = $1',
+    `SELECT u.id, u.email, u.phone, u.password_hash, u.full_name, u.role 
+     FROM users u
+     LEFT JOIN drivers d ON d.contact_number = u.phone
+     WHERE u.email = $1 OR u.phone = $1 OR d.license_number = $1
+     LIMIT 1`,
     [email]
   );
   if (rows.length === 0) {
