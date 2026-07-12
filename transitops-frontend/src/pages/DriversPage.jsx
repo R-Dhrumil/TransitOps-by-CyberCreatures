@@ -85,7 +85,7 @@ const DriversPage = () => {
   return (
     <div>
       <div className="page-header">
-        <h2>Driver Management</h2>
+        <h2>{hasRole('driver') ? 'My Driver Profile' : 'Driver Management'}</h2>
         {canManage && <button className="btn btn-primary" onClick={openAdd}>+ Add Driver</button>}
       </div>
 
@@ -116,6 +116,7 @@ const DriversPage = () => {
                 <th>Name</th><th>License No.</th><th>Category</th>
                 <th>Expiry</th><th>Safety Score</th><th>Contact</th><th>Status</th>
                 {canManage && <th>Actions</th>}
+                {hasRole('driver') && <th>Quick Report</th>}
               </tr>
             </thead>
             <tbody>
@@ -147,6 +148,13 @@ const DriversPage = () => {
                             </Link>
                           )}
                         </div>
+                      </td>
+                    )}
+                    {hasRole('driver') && (
+                      <td data-label="Quick Report">
+                        <Link to="/quick-report" className="btn btn-primary btn-sm" style={{ textDecoration: 'none' }}>
+                          Submit Report
+                        </Link>
                       </td>
                     )}
                   </tr>

@@ -2,6 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 const pool = require('../db/pool');
 const asyncHandler = require('../utils/asyncHandler');
 const AppError = require('../utils/AppError');
@@ -16,8 +17,20 @@ router.get('/', authenticate, asyncHandler(async (req, res) => {
 
   const { status } = req.query;
   const values = [];
-  const where = status ? `WHERE status = $1` : '';
-  if (status) values.push(status);
+  let whereClauses = [];
+
+  if (status) {
+    values.push(status);
+    whereClauses.push(`status = $${values.length}`);
+  }
+
+  // Isolate drivers so they only see their own profile
+  if (req.user.role === 'driver') {
+    values.push(req.user.phone || 'UNMATCHABLE_PHONE');
+    whereClauses.push(`contact_number = $${values.length}`);
+  }
+
+  const where = whereClauses.length ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
   const { rows } = await pool.query(
     `SELECT *, license_expiry_date < CURRENT_DATE AS license_expired
@@ -50,6 +63,21 @@ router.post('/', authenticate, requireRole('safety_officer', 'fleet_manager', 'd
      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
     [name, license_number, license_category, license_expiry_date, contact_number ?? null, safety_score ?? 100, status]
   );
+
+  // Automatically create a user account for the driver to log in
+  try {
+    const passwordHash = await bcrypt.hash(license_number, 12);
+    const fakeEmail = `${license_number.toLowerCase()}@transitops.local`;
+    await pool.query(
+      `INSERT INTO users (email, phone, password_hash, full_name, role)
+       VALUES ($1, $2, $3, $4, 'driver')
+       ON CONFLICT DO NOTHING`,
+      [fakeEmail, contact_number || license_number, passwordHash, name]
+    );
+  } catch (e) {
+    console.error('Failed to auto-create user for driver:', e.message);
+  }
+
   res.status(201).json({ success: true, data: rows[0] });
 }));
 

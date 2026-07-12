@@ -86,12 +86,12 @@ const LoginPage = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="email">Email or Phone / ईमेल या फोन</label>
+              <label className={styles.label} htmlFor="email">Email, Phone, or ID / ईमेल, फोन, या आईडी</label>
               <input
                 id="email"
                 type="text"
-                className={styles.input}
-                placeholder="driver@transitops.dev or 9876543210"
+                className={`${styles.input} ${errors.email ? styles.errorInput : ''}`}
+                placeholder="driver@transitops.dev, 9876543210, or DL123"
                 autoComplete="username"
                 {...register('email')}
               />
