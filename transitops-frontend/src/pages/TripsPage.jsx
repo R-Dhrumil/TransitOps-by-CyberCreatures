@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
 import apiClient from '../lib/apiClient.js';
 import AppIcon from '../components/ui/AppIcon.jsx';
+import ConfirmModal from '../components/ui/ConfirmModal.jsx';
 import styles from './TripsPage.module.css';
 
 const TripsPage = () => {
@@ -15,25 +16,38 @@ const TripsPage = () => {
   const [completeModal, setCompleteModal] = useState(null);
   const [completeData, setCompleteData] = useState({ final_odometer: '', fuel_consumed: '', fuel_cost: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
 
   const canCreate = hasRole('driver', 'fleet_manager');
 
   const handleDispatch = async (id) => {
-    if (!confirm('Dispatch this trip? Vehicle and driver status will be set to On Trip.')) return;
-    try {
-      await apiClient.patch(`/api/trips/${id}/dispatch`);
-      toast.success('Trip dispatched!');
-      refetch();
-    } catch {}
+    setConfirmDialog({
+      isOpen: true,
+      message: 'Dispatch this trip? Vehicle and driver status will be set to On Trip.',
+      onConfirm: async () => {
+        setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+        try {
+          await apiClient.patch(`/api/trips/${id}/dispatch`);
+          toast.success('Trip dispatched!');
+          refetch();
+        } catch {}
+      }
+    });
   };
 
   const handleCancel = async (id) => {
-    if (!confirm('Cancel this trip?')) return;
-    try {
-      await apiClient.patch(`/api/trips/${id}/cancel`);
-      toast.success('Trip cancelled.');
-      refetch();
-    } catch {}
+    setConfirmDialog({
+      isOpen: true,
+      message: 'Cancel this trip?',
+      onConfirm: async () => {
+        setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+        try {
+          await apiClient.patch(`/api/trips/${id}/cancel`);
+          toast.success('Trip cancelled.');
+          refetch();
+        } catch {}
+      }
+    });
   };
 
   const handleComplete = async () => {
@@ -164,6 +178,13 @@ const TripsPage = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmDialog.isOpen}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };

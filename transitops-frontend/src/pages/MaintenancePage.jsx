@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
 import apiClient from '../lib/apiClient.js';
 import AppIcon from '../components/ui/AppIcon.jsx';
+import ConfirmModal from '../components/ui/ConfirmModal.jsx';
 
 const maintenanceSchema = z.object({
   vehicle_id: z.string().uuid('Select a vehicle'),
@@ -21,6 +22,7 @@ const MaintenancePage = () => {
   const { data: vehicles } = useApi('/api/vehicles');
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(maintenanceSchema),
@@ -44,12 +46,18 @@ const MaintenancePage = () => {
   };
 
   const handleClose = async (id) => {
-    if (!confirm('Close this maintenance record? Vehicle will be set back to Available.')) return;
-    try {
-      await apiClient.patch(`/api/maintenance/${id}/close`);
-      toast.success('Maintenance closed. Vehicle is Available again.');
-      refetch();
-    } catch {}
+    setConfirmDialog({
+      isOpen: true,
+      message: 'Close this maintenance record? Vehicle will be set back to Available.',
+      onConfirm: async () => {
+        setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+        try {
+          await apiClient.patch(`/api/maintenance/${id}/close`);
+          toast.success('Maintenance closed. Vehicle is Available again.');
+          refetch();
+        } catch {}
+      }
+    });
   };
 
   return (
@@ -137,6 +145,13 @@ const MaintenancePage = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmDialog.isOpen}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };
