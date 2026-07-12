@@ -14,11 +14,11 @@ const loginSchema = z.object({
 });
 
 const DEMO_ACCOUNTS = [
-  { role: 'Fleet Manager',      email: 'manager@transitops.dev',  password: 'Manager@123' },
-  { role: 'Dispatcher',         email: 'dispatcher@transitops.dev',password: 'Dispatcher@123' },
-  { role: 'Driver',             email: '9876543210',               password: 'Driver@123' },
-  { role: 'Safety Officer',     email: 'safety@transitops.dev',   password: 'Safety@123' },
-  { role: 'Financial Analyst',  email: 'finance@transitops.dev',  password: 'Finance@123' },
+  { role: 'Fleet Manager', email: 'manager@transitops.dev', password: 'Manager@123' },
+  { role: 'Dispatcher', email: 'dispatcher@transitops.dev', password: 'Dispatcher@123' },
+  { role: 'Driver', email: '9876543210', password: '12345678' },
+  { role: 'Safety Officer', email: 'safety@transitops.dev', password: 'Safety@123' },
+  { role: 'Financial Analyst', email: 'finance@transitops.dev', password: 'Finance@123' },
 ];
 
 const LoginPage = () => {
@@ -95,7 +95,7 @@ const LoginPage = () => {
                 autoComplete="username"
                 {...register('email')}
               />
-              {errors.email && <span style={{color: '#fc8181', fontSize: '0.8rem', marginTop: '4px'}}>{errors.email.message}</span>}
+              {errors.email && <span style={{ color: '#fc8181', fontSize: '0.8rem', marginTop: '4px' }}>{errors.email.message}</span>}
             </div>
 
             <div className={styles.formGroup}>
@@ -108,7 +108,7 @@ const LoginPage = () => {
                 autoComplete="current-password"
                 {...register('password')}
               />
-              {errors.password && <span style={{color: '#fc8181', fontSize: '0.8rem', marginTop: '4px'}}>{errors.password.message}</span>}
+              {errors.password && <span style={{ color: '#fc8181', fontSize: '0.8rem', marginTop: '4px' }}>{errors.password.message}</span>}
             </div>
 
             <div className={styles.formGroup}>
