@@ -10,8 +10,10 @@
   flex-direction: column;
   transition: width var(--transition-normal);
   z-index: 100;
-  overflow: hidden;
+  /* overflow: hidden removed — collapseBtn needs to overflow the right edge */
+  overflow: visible;
 }
+
 .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
 
 .brand {
@@ -21,8 +23,10 @@
   border-bottom: 1px solid var(--color-border);
   height: var(--navbar-height);
   background-color: var(--color-brand-bg);
-  overflow: hidden;
+  overflow: hidden;   /* keep logo clipped inside brand area */
+  flex-shrink: 0;
 }
+
 .logo { font-size: 1.5rem; flex-shrink: 0; }
 .brandName {
   font-size: var(--font-size-lg);
@@ -41,7 +45,9 @@
   flex-direction: column;
   gap: var(--space-1);
   overflow-y: auto;
+  overflow-x: hidden;   /* clip nav items horizontally */
 }
+
 
 .navItem {
   display: flex;
@@ -86,7 +92,10 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  overflow: hidden;   /* clip footer content horizontally */
+  flex-shrink: 0;
 }
+
 .userInfo { display: flex; flex-direction: column; gap: var(--space-1); }
 .userName { font-size: var(--font-size-sm); font-weight: 600; color: var(--color-text-primary); }
 .userRole {
@@ -113,8 +122,9 @@
 
 .collapseBtn {
   position: absolute;
-  bottom: var(--space-10);
+  top: 50%;
   right: -12px;
+  transform: translateY(-50%);
   width: 24px;
   height: 24px;
   background: var(--color-bg-surface);
@@ -122,14 +132,21 @@
   border-radius: 50%;
   color: var(--color-text-secondary);
   cursor: pointer;
-  font-size: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all var(--transition-fast);
-  z-index: 10;
+  z-index: 101;   /* above sidebar so it's always clickable */
+  box-shadow: var(--shadow-sm);
 }
-.collapseBtn:hover { background: var(--color-brand); color: white; border-color: var(--color-brand); }
+.collapseBtn:hover {
+  background: var(--color-brand);
+  color: white;
+  border-color: var(--color-brand);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-50%) scale(1.1);
+}
+
 
 @media (max-width: 768px) {
   .sidebar {
