@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import AppIcon from '../ui/AppIcon.jsx';
@@ -20,6 +20,7 @@ const PAGE_TITLES = {
 const Navbar = ({ onMenuToggle }) => {
   const { user } = useAuth();
   const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
   const title = PAGE_TITLES[location.pathname] || 'TransitOps';
 
   return (
@@ -56,6 +57,9 @@ const Navbar = ({ onMenuToggle }) => {
 
       {/* Right — Actions + Avatar */}
       <div className={styles.right}>
+        <div className={styles.notifContainer}>
+          <NotificationDropdown />
+        </div>
         <div className={styles.userChip}>
           <span className={styles.avatar}>{user?.full_name?.[0]?.toUpperCase()}</span>
           <span className={styles.name}>{user?.full_name}</span>
