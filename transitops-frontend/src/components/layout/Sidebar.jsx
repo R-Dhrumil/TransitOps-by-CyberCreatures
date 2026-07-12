@@ -35,7 +35,7 @@ const Sidebar = ({ collapsed, onToggle, isMobile }) => {
         {collapsed && !isMobile ? (
           <span className={styles.logo}><AppIcon name="bus" size={22} /></span>
         ) : (
-          <img src="/logo.svg" alt="TransitOps" style={{ maxHeight: '32px', width: 'auto', objectFit: 'contain' }} />
+          <img src="/logo.svg" alt="TransitOps" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         )}
       </div>
 
