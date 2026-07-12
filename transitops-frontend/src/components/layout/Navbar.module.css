@@ -8,7 +8,7 @@
   right: 0;
   left: var(--sidebar-width);
   height: var(--navbar-height);
-  background: rgba(19, 19, 20, 0.85);
+  background: var(--color-navbar-bg);
   /* surface-container alpha */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);

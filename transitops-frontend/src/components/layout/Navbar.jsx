@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { useTheme } from '../../context/ThemeContext.jsx';
 import AppIcon from '../ui/AppIcon.jsx';
 import NotificationDropdown from '../ui/NotificationDropdown.jsx';
 import { useNotifications } from '../../hooks/useNotifications.js';
@@ -19,6 +20,7 @@ const PAGE_TITLES = {
 
 const Navbar = ({ onMenuToggle, searchQuery, onSearchChange, collapsed }) => {
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [showNotifications, setShowNotifications] = useState(false);
   const notifRef = useRef(null);
@@ -74,6 +76,16 @@ const Navbar = ({ onMenuToggle, searchQuery, onSearchChange, collapsed }) => {
 
       {/* Right — Actions + Avatar */}
       <div className={styles.right}>
+        {/* Theme Toggle */}
+        <button 
+          className={styles.iconBtn} 
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          <AppIcon name={theme === 'dark' ? 'sun' : 'moon'} size={20} />
+        </button>
+
         <div className={styles.notifContainer} ref={notifRef}>
           <button 
             className={styles.iconBtn} 

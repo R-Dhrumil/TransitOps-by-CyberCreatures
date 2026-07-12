@@ -18,6 +18,9 @@
   --color-bg-card:         #1C1B1C;   /* surface-container-low — Level 1 cards */
   --color-bg-surface:      #201F20;   /* surface-container — inputs / controls */
   --color-bg-hover:        #2A2A2A;   /* surface-container-high */
+  
+  --color-navbar-bg:       rgba(19, 19, 20, 0.85);
+  --color-brand-bg:        #e5e2e2;
 
   /* Borders */
   --color-border:          #44474A;   /* outline-variant */
@@ -105,6 +108,38 @@
   --sidebar-width:           240px;
   --sidebar-collapsed-width: 64px;
   --navbar-height:           64px;
+}
+
+/* ── Light Theme Overrides ─────────────────────────────────── */
+[data-theme="light"] {
+  --color-bg-primary:      #F8FAFC;
+  --color-bg-secondary:    #F1F5F9;
+  --color-bg-card:         #FFFFFF;
+  --color-bg-surface:      #FFFFFF;
+  --color-bg-hover:        #E2E8F0;
+
+  --color-navbar-bg:       rgba(248, 250, 252, 0.85);
+  --color-brand-bg:        #E2E8F0;
+
+  --color-border:          #E2E8F0;
+  --color-border-light:    #CBD5E1;
+
+  --color-text-primary:    #0F172A;
+  --color-text-secondary:  #334155;
+  --color-text-muted:      #64748B;
+
+  --color-brand:           #3B82F6;
+  --color-brand-dark:      #1D4ED8;
+  --color-brand-light:     #93C5FD;
+  --color-brand-glow:      rgba(59, 130, 246, 0.12);
+
+  --color-inverse-surface: #0F172A;
+  --color-inverse-on-surface: #F8FAFC;
+
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:  0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-brand: 0 0 24px rgba(59, 130, 246, 0.15);
 }
 
 /* ── Reset ──────────────────────────────────────────────────── */
