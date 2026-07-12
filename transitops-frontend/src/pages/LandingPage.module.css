@@ -205,3 +205,44 @@
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .nav {
+    flex-direction: column;
+    padding: var(--space-3);
+    gap: var(--space-4);
+  }
+  .nav > div:last-child {
+    flex-direction: column;
+    width: 100%;
+  }
+  .nav > div:last-child > * {
+    width: 100%;
+    justify-content: center;
+  }
+  .hero {
+    padding: var(--space-6) var(--space-4) var(--space-8);
+  }
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+  .heroActions {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .heroActions > * {
+    width: 100%;
+    justify-content: center;
+  }
+  .heroStats {
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+  .section {
+    padding: var(--space-8) var(--space-4);
+  }
+  .ctaCard {
+    padding: var(--space-6) var(--space-4);
+  }
+}
