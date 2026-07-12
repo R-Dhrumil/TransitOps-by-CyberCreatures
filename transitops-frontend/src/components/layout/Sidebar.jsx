@@ -56,17 +56,6 @@ const Sidebar = ({ collapsed, onToggle, isMobile }) => {
         ))}
       </nav>
 
-      <div className={styles.footer}>
-        {(!collapsed || isMobile) && (
-          <div className={styles.userInfo}>
-            <span className={styles.userName}>{user?.full_name}</span>
-            <span className={styles.userRole}>{user?.role?.replace('_', ' ')}</span>
-          </div>
-        )}
-        <button className={styles.logoutBtn} onClick={handleLogout} title="Logout">
-          <AppIcon name="logout" size={16} /> {(!collapsed || isMobile) && 'Logout'}
-        </button>
-      </div>
 
       {!isMobile && (
         <button className={styles.collapseBtn} onClick={onToggle} aria-label="Toggle sidebar">

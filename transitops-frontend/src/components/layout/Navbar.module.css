@@ -41,7 +41,9 @@
   padding: var(--space-2);
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
-  display: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mobileBrand {
