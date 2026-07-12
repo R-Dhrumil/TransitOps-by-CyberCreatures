@@ -6,11 +6,12 @@
   color: #c9d1d9;
 }
 
+/* ---- Header ---- */
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
+  align-items: flex-start;
+  margin-bottom: 0.25rem;
 }
 
 .title {
@@ -38,6 +39,7 @@
   padding: 0.5rem 1rem;
   border-radius: 6px;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .sysDot {
@@ -47,6 +49,7 @@
   border-radius: 50%;
 }
 
+/* ---- KPI Row ---- */
 .kpiRow {
   display: flex;
   gap: 1rem;
@@ -59,7 +62,7 @@
   border-radius: 8px;
   padding: 1rem 1.25rem;
   flex: 1;
-  min-width: 140px;
+  min-width: 130px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -72,11 +75,11 @@
 }
 
 .kpiLabel {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: #8b949e;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .kpiValue {
@@ -91,13 +94,14 @@
   color: #f85149;
 }
 
+/* ---- Utilization Donut ---- */
 .utilizationCard {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 0.75rem;
   justify-content: center;
-  min-width: 140px;
+  min-width: 130px;
   height: 90px;
   padding: 0.5rem 1rem;
 }
@@ -123,7 +127,7 @@
   fill: none;
   stroke-width: 2.8;
   stroke-linecap: round;
-  stroke: #1f6feb;
+  stroke: #f0883e;
   animation: progress 1s ease-out forwards;
 }
 
@@ -142,10 +146,11 @@
   letter-spacing: 0.05em;
 }
 
+/* ---- Bottom Section ---- */
 .bottomSection {
   display: flex;
   gap: 1.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .recentTripsCard {
@@ -154,6 +159,7 @@
   border-radius: 8px;
   padding: 1.5rem;
   flex: 7;
+  min-width: 0;
 }
 
 .vehicleStatusCard {
@@ -165,8 +171,10 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 240px;
 }
 
+/* ---- Card Header ---- */
 .cardHeader {
   display: flex;
   justify-content: space-between;
@@ -210,6 +218,7 @@
   color: #8b949e;
 }
 
+/* ---- Trips Table ---- */
 .tableResponsive {
   overflow-x: auto;
 }
@@ -250,14 +259,17 @@
   width: 16px;
   height: 16px;
   color: #8b949e;
+  flex-shrink: 0;
 }
 
+/* ---- Status Badges ---- */
 .statusBadge {
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.2rem 0.6rem;
   border-radius: 9999px;
   border: 1px solid transparent;
+  white-space: nowrap;
 }
 
 .statusBadge.ontrip {
@@ -290,6 +302,7 @@
   border-color: rgba(248, 81, 73, 0.4);
 }
 
+/* ---- Vehicle Status Bars ---- */
 .statusBars {
   display: flex;
   flex-direction: column;
@@ -322,24 +335,28 @@
   height: 100%;
   background-color: #58a6ff;
   border-radius: 9999px;
+  transition: width 0.6s ease;
 }
 
 .barFillAvailable {
   height: 100%;
   background-color: #3fb950;
   border-radius: 9999px;
+  transition: width 0.6s ease;
 }
 
 .barFillMaint {
   height: 100%;
   background-color: #f85149;
   border-radius: 9999px;
+  transition: width 0.6s ease;
 }
 
 .maintText {
   color: #f85149;
 }
 
+/* ---- View Report Button ---- */
 .viewReportBtn {
   display: flex;
   align-items: center;
@@ -360,9 +377,41 @@
   background-color: #c9d1d9;
 }
 
+/* ---- Animations ---- */
 @keyframes progress {
   0% {
     stroke-dasharray: 0 100;
   }
 }
 
+/* ---- Responsive ---- */
+@media (max-width: 1024px) {
+  .bottomSection {
+    flex-direction: column;
+  }
+
+  .vehicleStatusCard {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .kpiRow {
+    gap: 0.75rem;
+  }
+
+  .kpiCard {
+    min-width: 100px;
+    height: 80px;
+    padding: 0.75rem 1rem;
+  }
+
+  .kpiValue {
+    font-size: 1.75rem;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
