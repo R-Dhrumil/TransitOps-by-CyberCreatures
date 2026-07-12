@@ -35,8 +35,8 @@ router.get('/:id', authenticate, asyncHandler(async (req, res) => {
   res.json({ success: true, data: rows[0] });
 }));
 
-// POST /api/drivers — safety_officer only
-router.post('/', authenticate, requireRole('safety_officer'), validate(driverSchema), asyncHandler(async (req, res) => {
+// POST /api/drivers — safety_officer, fleet_manager, dispatcher
+router.post('/', authenticate, requireRole('safety_officer', 'fleet_manager', 'dispatcher'), validate(driverSchema), asyncHandler(async (req, res) => {
   const { name, license_number, license_category, license_expiry_date, contact_number, safety_score } = req.validatedBody;
   const { rows } = await pool.query(
     `INSERT INTO drivers (name, license_number, license_category, license_expiry_date, contact_number, safety_score)
@@ -46,8 +46,8 @@ router.post('/', authenticate, requireRole('safety_officer'), validate(driverSch
   res.status(201).json({ success: true, data: rows[0] });
 }));
 
-// PATCH /api/drivers/:id — safety_officer only
-router.patch('/:id', authenticate, requireRole('safety_officer'), validate(driverUpdateSchema), asyncHandler(async (req, res) => {
+// PATCH /api/drivers/:id — safety_officer, fleet_manager, dispatcher
+router.patch('/:id', authenticate, requireRole('safety_officer', 'fleet_manager', 'dispatcher'), validate(driverUpdateSchema), asyncHandler(async (req, res) => {
   const allowed = ['name', 'license_number', 'license_category', 'license_expiry_date', 'contact_number', 'safety_score', 'status'];
   const updates = Object.entries(req.validatedBody).filter(([k]) => allowed.includes(k));
   if (!updates.length) throw new AppError('No valid fields to update.', 400);

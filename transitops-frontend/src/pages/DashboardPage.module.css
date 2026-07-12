@@ -1,27 +1,368 @@
-.page { display: flex; flex-direction: column; gap: var(--space-8); }
-.section { display: flex; flex-direction: column; gap: var(--space-4); }
-.sectionLabel { font-size: var(--font-size-sm); font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.kpiGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); }
-.utilizationCard {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6);
+.page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: 1.5rem;
+  padding: 1.5rem;
+  color: #c9d1d9;
 }
-.utilizationValue { font-size: var(--font-size-4xl); font-weight: 800; color: var(--color-brand-light); }
-.utilizationBar {
-  height: 12px;
-  background: var(--color-bg-surface);
-  border-radius: var(--radius-full);
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #f0f6fc;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #8b949e;
+  margin: 0.25rem 0 0 0;
+}
+
+.sysStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #f0f6fc;
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+}
+
+.sysDot {
+  width: 8px;
+  height: 8px;
+  background-color: #238636;
+  border-radius: 50%;
+}
+
+.kpiRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.kpiCard {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 90px;
+  position: relative;
+}
+
+.activeVehCard {
+  border-bottom: 3px solid #f0f6fc;
+}
+
+.kpiLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #8b949e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.kpiValue {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #f0f6fc;
+  line-height: 1;
+  margin-top: 0.5rem;
+}
+
+.maintenanceCard .kpiValue {
+  color: #f85149;
+}
+
+.utilizationCard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+  min-width: 140px;
+  height: 90px;
+  padding: 0.5rem 1rem;
+}
+
+.utilizationCircle {
+  width: 50px;
+  height: 50px;
+}
+
+.circularChart {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.circleBg {
+  fill: none;
+  stroke: #21262d;
+  stroke-width: 2.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke: #1f6feb;
+  animation: progress 1s ease-out forwards;
+}
+
+.percentage {
+  fill: #f0f6fc;
+  font-size: 8px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.utilizationLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #8b949e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bottomSection {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.recentTripsCard {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 1.5rem;
+  flex: 7;
+}
+
+.vehicleStatusCard {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 1.5rem;
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f0f6fc;
+  margin: 0;
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.filterBtn:hover {
+  background-color: #21262d;
+}
+
+.filterIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.chartIcon {
+  width: 18px;
+  height: 18px;
+  color: #8b949e;
+}
+
+.tableResponsive {
+  overflow-x: auto;
+}
+
+.tripsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tripsTable th {
+  text-align: left;
+  color: #8b949e;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #21262d;
+  letter-spacing: 0.05em;
+}
+
+.tripsTable td {
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid #21262d;
+  color: #c9d1d9;
+}
+
+.tripsTable tr:last-child td {
+  border-bottom: none;
+}
+
+.vehicleCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.truckIcon {
+  width: 16px;
+  height: 16px;
+  color: #8b949e;
+}
+
+.statusBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+.statusBadge.ontrip {
+  color: #58a6ff;
+  background-color: rgba(56, 139, 253, 0.15);
+  border-color: rgba(56, 139, 253, 0.4);
+}
+
+.statusBadge.dispatched {
+  color: #d29922;
+  background-color: rgba(187, 128, 9, 0.15);
+  border-color: rgba(187, 128, 9, 0.4);
+}
+
+.statusBadge.completed {
+  color: #3fb950;
+  background-color: rgba(46, 160, 67, 0.15);
+  border-color: rgba(46, 160, 67, 0.4);
+}
+
+.statusBadge.draft {
+  color: #8b949e;
+  background-color: rgba(139, 148, 158, 0.15);
+  border-color: rgba(139, 148, 158, 0.4);
+}
+
+.statusBadge.cancelled {
+  color: #f85149;
+  background-color: rgba(248, 81, 73, 0.15);
+  border-color: rgba(248, 81, 73, 0.4);
+}
+
+.statusBars {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.statusBarRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.barLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8b949e;
+}
+
+.barContainer {
+  height: 6px;
+  background-color: #21262d;
+  border-radius: 9999px;
   overflow: hidden;
 }
-.utilizationFill {
+
+.barFillActive {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-brand), var(--color-brand-light));
-  border-radius: var(--radius-full);
-  transition: width 1s ease;
+  background-color: #58a6ff;
+  border-radius: 9999px;
 }
-.utilizationLabel { font-size: var(--font-size-sm); color: var(--color-text-muted); }
+
+.barFillAvailable {
+  height: 100%;
+  background-color: #3fb950;
+  border-radius: 9999px;
+}
+
+.barFillMaint {
+  height: 100%;
+  background-color: #f85149;
+  border-radius: 9999px;
+}
+
+.maintText {
+  color: #f85149;
+}
+
+.viewReportBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f6fc;
+  color: #0d1117;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  text-align: center;
+  transition: background-color 0.2s;
+  margin-top: auto;
+}
+
+.viewReportBtn:hover {
+  background-color: #c9d1d9;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
