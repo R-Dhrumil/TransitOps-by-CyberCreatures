@@ -1,9 +1,14 @@
+/* ============================================================
+   DashboardPage — Deep Sea Professional palette
+   All colors reference :root CSS custom properties from DESIGN.md
+   ============================================================ */
+
 .page {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  color: #c9d1d9;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  color: var(--color-text-secondary);
 }
 
 /* ---- Header ---- */
@@ -11,33 +16,37 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-1);
 }
 
 .title {
+  font-family: var(--font-display);
   font-size: 1.75rem;
-  font-weight: 600;
-  color: #f0f6fc;
+  font-weight: 700;
+  color: var(--color-text-primary);
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
-  font-size: 0.9rem;
-  color: #8b949e;
-  margin: 0.25rem 0 0 0;
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: var(--space-1) 0 0 0;
 }
 
 .sysStatus {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
   font-weight: 600;
-  color: #f0f6fc;
-  background-color: #161b22;
-  border: 1px solid #30363d;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
   letter-spacing: 0.05em;
   white-space: nowrap;
 }
@@ -45,22 +54,22 @@
 .sysDot {
   width: 8px;
   height: 8px;
-  background-color: #238636;
+  background-color: var(--color-success);
   border-radius: 50%;
 }
 
 /* ---- KPI Row ---- */
 .kpiRow {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .kpiCard {
-  background-color: #161b22;
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  padding: 1rem 1.25rem;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
   flex: 1;
   min-width: 130px;
   display: flex;
@@ -71,27 +80,29 @@
 }
 
 .activeVehCard {
-  border-bottom: 3px solid #f0f6fc;
+  border-bottom: 3px solid var(--color-text-primary);
 }
 
 .kpiLabel {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #8b949e;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
 }
 
 .kpiValue {
+  font-family: var(--font-display);
   font-size: 2.25rem;
   font-weight: 700;
-  color: #f0f6fc;
+  color: var(--color-text-primary);
   line-height: 1;
-  margin-top: 0.5rem;
+  margin-top: var(--space-2);
 }
 
 .maintenanceCard .kpiValue {
-  color: #f85149;
+  color: var(--color-danger);
 }
 
 /* ---- Utilization Donut ---- */
@@ -99,11 +110,11 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-3);
   justify-content: center;
   min-width: 130px;
   height: 90px;
-  padding: 0.5rem 1rem;
+  padding: var(--space-2) var(--space-4);
 }
 
 .utilizationCircle {
@@ -119,7 +130,7 @@
 
 .circleBg {
   fill: none;
-  stroke: #21262d;
+  stroke: var(--color-bg-surface);
   stroke-width: 2.8;
 }
 
@@ -127,21 +138,23 @@
   fill: none;
   stroke-width: 2.8;
   stroke-linecap: round;
-  stroke: #f0883e;
+  stroke: var(--color-warning);
   animation: progress 1s ease-out forwards;
 }
 
 .percentage {
-  fill: #f0f6fc;
+  fill: var(--color-text-primary);
+  font-family: var(--font-mono);
   font-size: 8px;
   font-weight: 700;
   text-anchor: middle;
 }
 
 .utilizationLabel {
+  font-family: var(--font-mono);
   font-size: 0.7rem;
-  font-weight: 600;
-  color: #8b949e;
+  font-weight: 500;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -149,24 +162,24 @@
 /* ---- Bottom Section ---- */
 .bottomSection {
   display: flex;
-  gap: 1.5rem;
-  margin-top: 0.25rem;
+  gap: var(--space-6);
+  margin-top: var(--space-1);
 }
 
 .recentTripsCard {
-  background-color: #161b22;
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  padding: 1.5rem;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
   flex: 7;
   min-width: 0;
 }
 
 .vehicleStatusCard {
-  background-color: #161b22;
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  padding: 1.5rem;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
   flex: 3;
   display: flex;
   flex-direction: column;
@@ -179,32 +192,34 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--space-5);
 }
 
 .cardTitle {
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 600;
-  color: #f0f6fc;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
 .filterBtn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
   background-color: transparent;
-  border: 1px solid #30363d;
-  color: #c9d1d9;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--transition-fast);
 }
 
 .filterBtn:hover {
-  background-color: #21262d;
+  background-color: var(--color-bg-hover);
 }
 
 .filterIcon {
@@ -215,7 +230,7 @@
 .chartIcon {
   width: 18px;
   height: 18px;
-  color: #8b949e;
+  color: var(--color-text-muted);
 }
 
 /* ---- Trips Table ---- */
@@ -226,23 +241,25 @@
 .tripsTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
 }
 
 .tripsTable th {
   text-align: left;
-  color: #8b949e;
-  font-weight: 600;
-  font-size: 0.75rem;
-  padding: 0.75rem 0.5rem;
-  border-bottom: 1px solid #21262d;
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  font-size: var(--font-size-xs);
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--color-bg-surface);
   letter-spacing: 0.05em;
 }
 
 .tripsTable td {
-  padding: 1rem 0.5rem;
-  border-bottom: 1px solid #21262d;
-  color: #c9d1d9;
+  padding: var(--space-4) var(--space-2);
+  border-bottom: 1px solid var(--color-bg-surface);
+  color: var(--color-text-secondary);
 }
 
 .tripsTable tr:last-child td {
@@ -252,108 +269,112 @@
 .vehicleCell {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .truckIcon {
   width: 16px;
   height: 16px;
-  color: #8b949e;
+  color: var(--color-text-muted);
   flex-shrink: 0;
 }
 
 /* ---- Status Badges ---- */
 .statusBadge {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.2rem 0.6rem;
-  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
   border: 1px solid transparent;
   white-space: nowrap;
+  letter-spacing: 0.05em;
 }
 
 .statusBadge.ontrip {
-  color: #58a6ff;
-  background-color: rgba(56, 139, 253, 0.15);
-  border-color: rgba(56, 139, 253, 0.4);
+  color: var(--color-info);
+  background-color: var(--color-info-bg);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
 .statusBadge.dispatched {
-  color: #d29922;
-  background-color: rgba(187, 128, 9, 0.15);
-  border-color: rgba(187, 128, 9, 0.4);
+  color: var(--color-warning);
+  background-color: var(--color-warning-bg);
+  border-color: rgba(251, 191, 36, 0.4);
 }
 
 .statusBadge.completed {
-  color: #3fb950;
-  background-color: rgba(46, 160, 67, 0.15);
-  border-color: rgba(46, 160, 67, 0.4);
+  color: var(--color-success);
+  background-color: var(--color-success-bg);
+  border-color: rgba(52, 211, 153, 0.4);
 }
 
 .statusBadge.draft {
-  color: #8b949e;
-  background-color: rgba(139, 148, 158, 0.15);
-  border-color: rgba(139, 148, 158, 0.4);
+  color: var(--color-neutral);
+  background-color: var(--color-neutral-bg);
+  border-color: rgba(143, 145, 149, 0.4);
 }
 
 .statusBadge.cancelled {
-  color: #f85149;
-  background-color: rgba(248, 81, 73, 0.15);
-  border-color: rgba(248, 81, 73, 0.4);
+  color: var(--color-danger);
+  background-color: var(--color-danger-bg);
+  border-color: rgba(255, 180, 171, 0.4);
 }
 
 /* ---- Vehicle Status Bars ---- */
 .statusBars {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  margin-bottom: 2rem;
+  gap: var(--space-5);
+  margin-bottom: var(--space-8);
 }
 
 .statusBarRow {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .barLabel {
   display: flex;
   justify-content: space-between;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #8b949e;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
 }
 
 .barContainer {
   height: 6px;
-  background-color: #21262d;
-  border-radius: 9999px;
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-full);
   overflow: hidden;
 }
 
 .barFillActive {
   height: 100%;
-  background-color: #58a6ff;
-  border-radius: 9999px;
+  background-color: var(--color-info);
+  border-radius: var(--radius-full);
   transition: width 0.6s ease;
 }
 
 .barFillAvailable {
   height: 100%;
-  background-color: #3fb950;
-  border-radius: 9999px;
+  background-color: var(--color-success);
+  border-radius: var(--radius-full);
   transition: width 0.6s ease;
 }
 
 .barFillMaint {
   height: 100%;
-  background-color: #f85149;
-  border-radius: 9999px;
+  background-color: var(--color-danger);
+  border-radius: var(--radius-full);
   transition: width 0.6s ease;
 }
 
 .maintText {
-  color: #f85149;
+  color: var(--color-danger);
 }
 
 /* ---- View Report Button ---- */
@@ -361,20 +382,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f6fc;
-  color: #0d1117;
+  background-color: var(--color-inverse-surface);
+  color: var(--color-inverse-on-surface);
   text-decoration: none;
+  font-family: var(--font-mono);
   font-weight: 600;
-  font-size: 0.85rem;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
+  font-size: var(--font-size-xs);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
   text-align: center;
-  transition: background-color 0.2s;
+  letter-spacing: 0.05em;
+  transition: background-color var(--transition-fast);
   margin-top: auto;
 }
 
 .viewReportBtn:hover {
-  background-color: #c9d1d9;
+  background-color: var(--color-text-secondary);
 }
 
 /* ---- Animations ---- */
@@ -397,13 +420,13 @@
 
 @media (max-width: 768px) {
   .kpiRow {
-    gap: 0.75rem;
+    gap: var(--space-3);
   }
 
   .kpiCard {
     min-width: 100px;
     height: 80px;
-    padding: 0.75rem 1rem;
+    padding: var(--space-3) var(--space-4);
   }
 
   .kpiValue {
@@ -412,6 +435,6 @@
 
   .header {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--space-3);
   }
 }

@@ -1,11 +1,16 @@
+/* ============================================================
+   Navbar — Deep Sea Professional palette
+   ============================================================ */
+
 .navbar {
   position: fixed;
   top: 0;
   right: 0;
   left: var(--sidebar-width);
   height: var(--navbar-height);
-  background: rgba(10, 15, 30, 0.85);
+  background: rgba(19, 19, 20, 0.85);  /* surface-container alpha */
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
@@ -14,7 +19,14 @@
   z-index: 50;
   transition: left var(--transition-normal);
 }
-.left { display: flex; align-items: center; gap: var(--space-4); }
+
+/* ---- Left side ---- */
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
 .menuBtn {
   background: none;
   border: none;
@@ -26,45 +38,147 @@
   transition: all var(--transition-fast);
   display: none;
 }
-.menuBtn:hover { background: var(--color-bg-hover); color: var(--color-text-primary); }
-.pageTitle {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
+
+.menuBtn:hover {
+  background: var(--color-bg-hover);
   color: var(--color-text-primary);
 }
-.right { display: flex; align-items: center; gap: var(--space-4); }
-.userChip {
+
+/* ---- Search bar ---- */
+.searchWrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 260px;
+  height: 38px;
+  padding: 0 var(--space-4) 0 36px;
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-light);
   border-radius: var(--radius-full);
-  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchInput:focus {
+  border-color: var(--color-info);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* ---- Right side ---- */
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ---- Icon buttons (bell, help) ---- */
+.iconBtn {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.iconBtn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.iconBtn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-hover);
+}
+
+/* ---- Avatar button ---- */
+.avatarBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: var(--space-2);
+}
+
+.avatarRing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 180deg,
+    var(--color-brand-light) 0deg,
+    var(--color-brand) 120deg,
+    var(--color-brand-dark) 240deg,
+    var(--color-brand-light) 360deg
+  );
+  padding: 2px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.avatarRing:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 14px var(--color-brand-glow);
+}
+
 .avatar {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--color-brand), var(--color-brand-dark));
+  width: 34px;
+  height: 34px;
+  background: var(--color-bg-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-display);
   font-size: var(--font-size-sm);
   font-weight: 700;
-  color: white;
+  color: var(--color-text-primary);
+  letter-spacing: 0.02em;
 }
-.name { font-size: var(--font-size-sm); font-weight: 500; }
-.roleBadge {
-  font-size: var(--font-size-xs);
-  color: var(--color-brand);
-  background: var(--color-brand-glow);
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-full);
-  text-transform: capitalize;
-}
+
+/* ---- Responsive ---- */
 @media (max-width: 768px) {
-  .navbar { left: 0; }
-  .menuBtn { display: flex; }
-  .name { display: none; }
+  .navbar {
+    left: 0;
+  }
+
+  .menuBtn {
+    display: flex;
+  }
+
+  .searchInput {
+    width: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchWrapper {
+    display: none;
+  }
 }
