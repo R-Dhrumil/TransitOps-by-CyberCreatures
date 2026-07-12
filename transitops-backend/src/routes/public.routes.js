@@ -7,6 +7,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const AppError = require('../utils/AppError');
 const { validate } = require('../middleware/validate');
 const { incidentSchema } = require('../validators/schemas');
+const { notifyAllExceptRole } = require('../services/notification.service');
 
 // GET /api/public/active-trip — Find active trip by vehicle registration number
 router.get('/active-trip', asyncHandler(async (req, res) => {
@@ -48,6 +49,8 @@ router.post('/trips/:id/incidents', validate(incidentSchema), asyncHandler(async
      VALUES ($1, NULL, $2, $3, $4, $5) RETURNING *`,
     [trip_id, incident_type, location ?? null, photo_url ?? null, comments ?? null]
   );
+
+  await notifyAllExceptRole('driver', 'Public Incident Reported', `A public report for a ${incident_type} incident was submitted for Trip #${trip_id}.`, 'warning', `/trips`);
 
   res.status(201).json({ success: true, data: rows[0] });
 }));

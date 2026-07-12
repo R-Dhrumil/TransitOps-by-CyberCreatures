@@ -50,7 +50,34 @@ const notifyRole = async (role, title, message, type = 'info', link = null) => {
   }
 };
 
+/**
+ * Creates a notification for all users EXCEPT a specific role
+ * @param {string} excludeRole - e.g., 'driver'
+ * @param {string} title - Notification title
+ * @param {string} message - Notification message body
+ * @param {string} type - 'info', 'success', 'warning', 'error'
+ * @param {string} link - Optional URL to redirect to
+ */
+const notifyAllExceptRole = async (excludeRole, title, message, type = 'info', link = null) => {
+  try {
+    const { rows: users } = await pool.query('SELECT id FROM users WHERE role != $1', [excludeRole]);
+    if (!users.length) return [];
+
+    const values = users.map((u) => `('${u.id}', $1, $2, $3, $4)`).join(', ');
+    const query = `
+      INSERT INTO notifications (user_id, title, message, type, link)
+      VALUES ${values} RETURNING *
+    `;
+    const { rows } = await pool.query(query, [title, message, type, link]);
+    return rows;
+  } catch (error) {
+    console.error('Failed to create notifications excluding role:', excludeRole, error);
+    return [];
+  }
+};
+
 module.exports = {
   notifyUser,
-  notifyRole
+  notifyRole,
+  notifyAllExceptRole
 };
