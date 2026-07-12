@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import apiClient from '../lib/apiClient.js';
+import AppIcon from '../components/ui/AppIcon.jsx';
 import toast from 'react-hot-toast';
 import styles from './RoleManagerPage.module.css';
 
@@ -60,8 +61,8 @@ function AddMemberModal({ onClose, onSuccess }) {
       toast.success(data.message || 'Team member created!');
       onSuccess(data.data);
       onClose();
-    } catch (err) {
-      // apiClient already toasted the error; no-op here
+    } catch {
+      // apiClient already toasted the error
     } finally {
       setLoading(false);
     }
@@ -71,10 +72,15 @@ function AddMemberModal({ onClose, onSuccess }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>
-            <span className={styles.modalIcon}>👤</span> Add Team Member
+          <h3 className={styles.modalTitle}>
+            <span className={styles.modalTitleIcon}>
+              <AppIcon name="userPlus" size={20} />
+            </span>
+            Add Team Member
           </h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose}>
+            <AppIcon name="x" size={16} />
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} noValidate>
@@ -122,8 +128,9 @@ function AddMemberModal({ onClose, onSuccess }) {
                   className={styles.eyeBtn}
                   onClick={() => setShowPassword((s) => !s)}
                   tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? '🙈' : '👁️'}
+                  <AppIcon name={showPassword ? 'eyeOff' : 'eye'} size={16} />
                 </button>
               </div>
               {errors.password && <span className="form-error">{errors.password}</span>}
@@ -145,7 +152,7 @@ function AddMemberModal({ onClose, onSuccess }) {
             </div>
 
             <div className={styles.infoNote}>
-              <span>ℹ️</span>
+              <AppIcon name="info" size={15} />
               <span>The member will use this email and password to log in. Share credentials securely.</span>
             </div>
           </div>
@@ -158,7 +165,7 @@ function AddMemberModal({ onClose, onSuccess }) {
               {loading ? (
                 <><span className="spinner" style={{ width: 14, height: 14 }} /> Creating…</>
               ) : (
-                <>✚ Create Account</>
+                <><AppIcon name="userPlus" size={15} /> Create Account</>
               )}
             </button>
           </div>
@@ -192,8 +199,15 @@ function EditRoleModal({ user, onClose, onSuccess }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" style={{ maxWidth: 400 }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>✏️ Change Role</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <h3 className={styles.modalTitle}>
+            <span className={styles.modalTitleIcon}>
+              <AppIcon name="pencil" size={18} />
+            </span>
+            Change Role
+          </h3>
+          <button className="modal-close" onClick={onClose}>
+            <AppIcon name="x" size={16} />
+          </button>
         </div>
         <p style={{ marginBottom: 'var(--space-4)', color: 'var(--color-text-secondary)' }}>
           Updating role for <strong style={{ color: 'var(--color-text-primary)' }}>{user.full_name}</strong>
@@ -217,7 +231,9 @@ function EditRoleModal({ user, onClose, onSuccess }) {
               Cancel
             </button>
             <button type="submit" className="btn btn-primary" disabled={loading || role === user.role}>
-              {loading ? <><span className="spinner" style={{ width: 14, height: 14 }} /> Saving…</> : 'Save Role'}
+              {loading
+                ? <><span className="spinner" style={{ width: 14, height: 14 }} /> Saving…</>
+                : <><AppIcon name="check" size={15} /> Save Role</>}
             </button>
           </div>
         </form>
@@ -245,10 +261,17 @@ function DeleteConfirmModal({ user, onClose, onSuccess }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 400 }} onClick={(e) => e.stopPropagation()}>
+      <div className="modal" style={{ maxWidth: 420 }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>🗑️ Remove Member</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <h3 className={styles.modalTitle}>
+            <span className={`${styles.modalTitleIcon} ${styles.modalTitleIconDanger}`}>
+              <AppIcon name="trash" size={18} />
+            </span>
+            Remove Member
+          </h3>
+          <button className="modal-close" onClick={onClose}>
+            <AppIcon name="x" size={16} />
+          </button>
         </div>
         <p style={{ color: 'var(--color-text-secondary)', marginBottom: 'var(--space-4)' }}>
           Are you sure you want to remove{' '}
@@ -260,7 +283,9 @@ function DeleteConfirmModal({ user, onClose, onSuccess }) {
             Cancel
           </button>
           <button type="button" className="btn btn-danger" onClick={handleDelete} disabled={loading}>
-            {loading ? <><span className="spinner" style={{ width: 14, height: 14 }} /> Removing…</> : '🗑️ Remove'}
+            {loading
+              ? <><span className="spinner" style={{ width: 14, height: 14 }} /> Removing…</>
+              : <><AppIcon name="trash" size={15} /> Remove</>}
           </button>
         </div>
       </div>
@@ -303,13 +328,11 @@ export default function RoleManagerPage() {
 
   useEffect(() => { fetchUsers(); }, [fetchUsers]);
 
-  // Handlers for modal success callbacks
   const handleUserCreated = (newUser) => setUsers((u) => [newUser, ...u]);
   const handleRoleUpdated = (updated) =>
     setUsers((u) => u.map((x) => (x.id === updated.id ? { ...x, ...updated } : x)));
   const handleUserDeleted = (id) => setUsers((u) => u.filter((x) => x.id !== id));
 
-  // Filtered list
   const filtered = users.filter((u) => {
     const matchSearch =
       u.full_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -318,7 +341,6 @@ export default function RoleManagerPage() {
     return matchSearch && matchRole;
   });
 
-  // Stats
   const stats = ASSIGNABLE_ROLES.map((r) => ({
     role: r,
     count: users.filter((u) => u.role === r).length,
@@ -336,7 +358,9 @@ export default function RoleManagerPage() {
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <h2 className={styles.title}>
-            <span className={styles.titleIcon}>🛡️</span>
+            <span className={styles.titleIcon}>
+              <AppIcon name="shield" size={26} />
+            </span>
             Role Manager
           </h2>
           <p className={styles.subtitle}>
@@ -348,7 +372,8 @@ export default function RoleManagerPage() {
           className={`btn btn-primary ${styles.addBtn}`}
           onClick={() => setShowAddModal(true)}
         >
-          ✚ Add Team Member
+          <AppIcon name="userPlus" size={16} />
+          Add Team Member
         </button>
       </div>
 
@@ -361,7 +386,7 @@ export default function RoleManagerPage() {
         {stats.map(({ role, count, meta }) => (
           <div
             key={role}
-            className={`${styles.statCard} ${styles[`statCard_${meta.color}`]}`}
+            className={`${styles.statCard} ${styles[`statCard_${meta.color}`]} ${filterRole === role ? styles.statCardActive : ''}`}
             onClick={() => setFilterRole(filterRole === role ? 'all' : role)}
             style={{ cursor: 'pointer' }}
             title={`Filter by ${meta.label}`}
@@ -374,15 +399,17 @@ export default function RoleManagerPage() {
 
       {/* ── Filters ─────────────────────────────────────────── */}
       <div className="filters-bar">
-        <input
-          id="role-manager-search"
-          className="form-input"
-          style={{ maxWidth: 280 }}
-          type="text"
-          placeholder="🔍 Search by name or email…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <div className={styles.searchWrapper}>
+          <AppIcon name="search" size={15} className={styles.searchIcon} />
+          <input
+            id="role-manager-search"
+            className={`form-input ${styles.searchInput}`}
+            type="text"
+            placeholder="Search by name or email…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
         <select
           id="role-manager-filter"
           className="form-select"
@@ -400,7 +427,7 @@ export default function RoleManagerPage() {
             className="btn btn-secondary btn-sm"
             onClick={() => { setSearch(''); setFilterRole('all'); }}
           >
-            ✕ Clear
+            <AppIcon name="x" size={13} /> Clear
           </button>
         )}
         <span className={styles.resultCount}>
@@ -416,7 +443,7 @@ export default function RoleManagerPage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="empty-state">
-          <span>👥</span>
+          <AppIcon name="users" size={40} />
           <strong>{search || filterRole !== 'all' ? 'No members match your filters' : 'No team members yet'}</strong>
           <p>Click "Add Team Member" to create the first account.</p>
         </div>
@@ -443,11 +470,9 @@ export default function RoleManagerPage() {
                         <div className={styles.avatar}>
                           {u.full_name.charAt(0).toUpperCase()}
                         </div>
-                        <div>
-                          <div className={styles.memberName}>
-                            {u.full_name}
-                            {isSelf && <span className={styles.youBadge}>You</span>}
-                          </div>
+                        <div className={styles.memberName}>
+                          {u.full_name}
+                          {isSelf && <span className={styles.youBadge}>You</span>}
                         </div>
                       </div>
                     </td>
@@ -469,19 +494,20 @@ export default function RoleManagerPage() {
                               onClick={() => setEditTarget(u)}
                               title="Change role"
                             >
-                              ✏️ Role
+                              <AppIcon name="pencil" size={13} /> Role
                             </button>
                             <button
-                              className={`btn btn-danger btn-sm ${styles.actionBtn}`}
+                              className={`btn btn-danger btn-sm ${styles.iconBtn}`}
                               onClick={() => setDeleteTarget(u)}
                               title="Remove member"
                             >
-                              🗑️
+                              <AppIcon name="trash" size={13} />
                             </button>
                           </>
                         ) : (
                           <span className={styles.lockedLabel}>
-                            {isSelf ? '— You' : '🔒 Protected'}
+                            <AppIcon name={isSelf ? 'userCheck' : 'lock'} size={13} />
+                            {isSelf ? 'You' : 'Protected'}
                           </span>
                         )}
                       </div>
