@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import apiClient from '../lib/apiClient.js';
 import AppIcon from '../components/ui/AppIcon.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 import styles from './QuickReportPage.module.css';
 
 const INCIDENT_TYPES = [
@@ -15,6 +16,7 @@ const INCIDENT_TYPES = [
 ];
 
 export default function QuickReportPage() {
+  const { user } = useAuth();
   const [step, setStep] = useState(0); // 0: Search, 1: Report Form, 2: Success
   const [vehicleNo, setVehicleNo] = useState('');
   const [loading, setLoading] = useState(false);
@@ -118,6 +120,16 @@ export default function QuickReportPage() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', paddingBottom: 'var(--space-3)' }}>
+          <Link to={user ? "/dashboard" : "/"} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--color-brand-light)', textDecoration: 'none', fontWeight: '500' }}>
+            <AppIcon name="arrowLeft" size={16} /> {user ? 'Dashboard / डैशबोर्ड' : 'Home / होम'}
+          </Link>
+          {user && (
+            <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+              Driver: <strong style={{ color: 'var(--color-text-primary)' }}>{user.full_name}</strong>
+            </span>
+          )}
+        </div>
         <div className={styles.header}>
           <div className={styles.logo}>
             <AppIcon name="alert" size={28} />
@@ -178,7 +190,9 @@ export default function QuickReportPage() {
             )}
 
             <div className={styles.portalLink}>
-              <Link to="/login" style={{ fontSize: '12px' }}>Go back to login portal</Link>
+              <Link to={user ? "/dashboard" : "/login"} style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <AppIcon name="arrowLeft" size={12} /> {user ? 'Go back to driver portal / डैशबोर्ड' : 'Go back to login portal / लॉगिन पोर्टल'}
+              </Link>
             </div>
           </form>
         )}
@@ -314,10 +328,17 @@ export default function QuickReportPage() {
               type="button"
               className="btn btn-primary"
               onClick={handleReset}
-              style={{ marginTop: 'var(--space-4)' }}
+              style={{ marginTop: 'var(--space-4)', width: '100%' }}
             >
               Report Another Issue / दूसरी रिपोर्ट दर्ज करें
             </button>
+            <Link
+              to={user ? "/dashboard" : "/login"}
+              className="btn btn-secondary"
+              style={{ marginTop: 'var(--space-3)', width: '100%', display: 'inline-flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}
+            >
+              <AppIcon name="arrowLeft" size={16} /> {user ? 'Go back to Dashboard / डैशबोर्ड' : 'Go back to Login / लॉगिन'}
+            </Link>
           </div>
         )}
       </div>
