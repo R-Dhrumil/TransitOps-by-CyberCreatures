@@ -107,8 +107,6 @@ const Navbar = ({ onMenuToggle, searchQuery, onSearchChange, collapsed }) => {
         </div>
         <div className={styles.userChip}>
           <span className={styles.avatar}>{user?.full_name?.[0]?.toUpperCase()}</span>
-          <span className={styles.name}>{user?.full_name}</span>
-          <span className={styles.roleBadge}>{user?.role?.replace(/_/g, ' ')}</span>
         </div>
       </div>
     </header>

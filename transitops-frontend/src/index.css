@@ -50,7 +50,7 @@
   --color-neutral-bg:      rgba(143, 145, 149, 0.10);
 
   /* Inverse (for buttons / high-contrast elements) */
-  --color-inverse-surface: #E5E2E2;   /* inverse-surface */
+  --color-inverse-surface: #b8b7b7;   /* inverse-surface */
   --color-inverse-on-surface: #313031; /* inverse-on-surface */
 
   /* Secondary & Tertiary */
