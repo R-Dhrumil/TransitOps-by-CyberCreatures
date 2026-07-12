@@ -7,7 +7,14 @@ import useApi from '../hooks/useApi.js';
 import apiClient from '../lib/apiClient.js';
 import toast from 'react-hot-toast';
 import AppIcon from '../components/ui/AppIcon.jsx';
+import {
+  exportFuelEfficiencyPDF,
+  exportUtilizationPDF,
+  exportCostPDF,
+  exportRoiPDF,
+} from '../lib/pdfExport.js';
 import styles from './ReportsPage.module.css';
+
 
 const CHART_COLORS = ['#0ea5e9', '#22c55e', '#f59e0b', '#a78bfa', '#ef4444', '#06b6d4'];
 
@@ -30,6 +37,25 @@ const ReportsPage = () => {
       toast.success('CSV downloaded.');
     } catch { toast.error('Export failed.'); }
   };
+
+  const handleExportPDF = () => {
+    try {
+      const dataMap = {
+        'fuel-efficiency': { fn: exportFuelEfficiencyPDF, data: fuelData },
+        'utilization':     { fn: exportUtilizationPDF,   data: utilData },
+        'cost':            { fn: exportCostPDF,           data: costData },
+        'roi':             { fn: exportRoiPDF,            data: roiData  },
+      };
+      const { fn, data } = dataMap[activeReport] || {};
+      if (fn && data?.length) {
+        fn(data);
+        toast.success('PDF downloaded.');
+      } else {
+        toast.error('No data to export yet.');
+      }
+    } catch { toast.error('PDF export failed.'); }
+  };
+
 
   const REPORTS = [
     { id: 'fuel-efficiency', label: 'Fuel Efficiency', icon: 'fuel', loading: fLoading },
@@ -54,7 +80,14 @@ const ReportsPage = () => {
     <div>
       <div className="page-header">
         <h2>Reports & Analytics</h2>
-        <button className="btn btn-secondary" onClick={() => handleExport(activeReport)}><AppIcon name="download" size={14} /> Export CSV</button>
+        <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+          <button className="btn btn-secondary" onClick={() => handleExport(activeReport)}>
+            <AppIcon name="download" size={14} /> Export CSV
+          </button>
+          <button className="btn btn-secondary" onClick={handleExportPDF}>
+            <AppIcon name="download" size={14} /> Export PDF
+          </button>
+        </div>
       </div>
 
       {/* Report tabs */}

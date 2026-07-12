@@ -10,6 +10,8 @@ import StatusBadge from '../components/ui/StatusBadge.jsx';
 import apiClient from '../lib/apiClient.js';
 import AppIcon from '../components/ui/AppIcon.jsx';
 import CustomSelect from '../components/ui/CustomSelect.jsx';
+import { exportDriversPDF } from '../lib/pdfExport.js';
+
 
 const driverSchema = z.object({
   name: z.string().min(2, 'Min 2 characters'),
@@ -86,8 +88,19 @@ const DriversPage = () => {
     <div>
       <div className="page-header">
         <h2>{hasRole('driver') ? 'My Driver Profile' : 'Driver Management'}</h2>
-        {canManage && <button className="btn btn-primary" onClick={openAdd}>+ Add Driver</button>}
+        <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => { exportDriversPDF(filteredDrivers); toast.success('PDF downloaded.'); }}
+            disabled={!filteredDrivers?.length}
+            title="Download driver list as PDF"
+          >
+            <AppIcon name="download" size={14} /> Export PDF
+          </button>
+          {canManage && <button className="btn btn-primary" onClick={openAdd}>+ Add Driver</button>}
+        </div>
       </div>
+
 
       <div className="filters-bar">
         <CustomSelect 
