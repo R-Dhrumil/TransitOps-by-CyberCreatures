@@ -8,6 +8,7 @@ const AppError = require('../utils/AppError');
 const { validate } = require('../middleware/validate');
 const { incidentSchema } = require('../validators/schemas');
 const { notifyAllExceptRole } = require('../services/notification.service');
+const { sendIncidentAlertEmail } = require('../utils/email');
 
 // GET /api/public/active-trip — Find active trip by vehicle registration number
 router.get('/active-trip', asyncHandler(async (req, res) => {
@@ -51,6 +52,24 @@ router.post('/trips/:id/incidents', validate(incidentSchema), asyncHandler(async
   );
 
   await notifyAllExceptRole('driver', 'Public Incident Reported', `A public report for a ${incident_type} incident was submitted for Trip #${trip_id}.`, 'warning', `/trips`);
+
+  // Query safety officers and fleet managers for email notification
+  pool.query("SELECT email FROM users WHERE role IN ('safety_officer', 'fleet_manager')")
+    .then(({ rows: userRows }) => {
+      const emails = userRows.map(u => u.email).filter(Boolean);
+      if (emails.length) {
+        return sendIncidentAlertEmail({
+          recipients: emails,
+          tripId: trip_id,
+          reporterName: 'Anonymous / Public Quick Report',
+          incidentType,
+          location,
+          comments,
+          photoUrl: photo_url
+        });
+      }
+    })
+    .catch(err => console.error('[Email Public Incident] Failed to send incident email notification:', err));
 
   res.status(201).json({ success: true, data: rows[0] });
 }));
