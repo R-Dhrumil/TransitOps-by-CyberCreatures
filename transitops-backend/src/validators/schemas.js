@@ -91,6 +91,23 @@ const incidentSchema = z.object({
   comments: z.string().optional(),
 });
 
+// Schema for fleet manager to create a new user account
+const createUserSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  full_name: z.string().min(2, 'Full name must be at least 2 characters'),
+  role: z.enum(['dispatcher', 'driver', 'safety_officer', 'financial_analyst'], {
+    errorMap: () => ({ message: 'Role must be one of: dispatcher, driver, safety_officer, financial_analyst' }),
+  }),
+});
+
+// Schema for updating a user's role
+const updateUserRoleSchema = z.object({
+  role: z.enum(['dispatcher', 'driver', 'safety_officer', 'financial_analyst'], {
+    errorMap: () => ({ message: 'Role must be one of: dispatcher, driver, safety_officer, financial_analyst' }),
+  }),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -104,4 +121,6 @@ module.exports = {
   fuelLogSchema,
   expenseSchema,
   incidentSchema,
+  createUserSchema,
+  updateUserRoleSchema,
 };

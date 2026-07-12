@@ -48,6 +48,7 @@ const FuelExpensesPage   = lazyWithRetry(() => import('./pages/FuelExpensesPage.
 const ReportsPage        = lazyWithRetry(() => import('./pages/ReportsPage.jsx'), 'reports');
 const QuickReportPage    = lazyWithRetry(() => import('./pages/QuickReportPage.jsx'), 'quick-report');
 const NotFoundPage       = lazyWithRetry(() => import('./pages/NotFoundPage.jsx'), 'not-found');
+const RoleManagerPage    = lazyWithRetry(() => import('./pages/RoleManagerPage.jsx'), 'role-manager');
 
 export default function App() {
   return (
@@ -73,6 +74,7 @@ export default function App() {
                     <Route path="/maintenance"  element={<MaintenancePage />} />
                     <Route path="/fuel-expenses" element={<FuelExpensesPage />} />
                     <Route path="/reports"      element={<ReportsPage />} />
+                    <Route path="/role-manager" element={<RoleManagerPage />} />
                   </Route>
                 </Route>
 

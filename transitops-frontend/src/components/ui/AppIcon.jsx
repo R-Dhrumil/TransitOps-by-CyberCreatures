@@ -33,6 +33,7 @@ const ICON_PATHS = {
   download: ['M12 3v12', 'm7-5-7 7-7-7', 'M5 21h14'],
   filter: ['M22 3H2l8 9.46V19l4 2v-8.54L22 3z'],
   list: ['M8 6h13', 'M8 12h13', 'M8 18h13', 'M3 6h.01', 'M3 12h.01', 'M3 18h.01'],
+  shield: ['M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z'],
 };
 
 const AppIcon = ({ name, size = 18, className = '', strokeWidth = 1.8 }) => {

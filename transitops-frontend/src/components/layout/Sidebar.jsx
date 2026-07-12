@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { path: '/maintenance',    label: 'Maintenance',    icon: 'maintenance', roles: ['fleet_manager'] },
   { path: '/fuel-expenses',  label: 'Fuel & Expenses', icon: 'fuel', roles: ['driver', 'fleet_manager', 'financial_analyst'] },
   { path: '/reports',        label: 'Reports',        icon: 'reports', roles: ['fleet_manager', 'financial_analyst', 'safety_officer'] },
+  { path: '/role-manager',   label: 'Role Manager',   icon: 'shield',  roles: ['fleet_manager'] },
 ];
 
 const Sidebar = ({ collapsed, onToggle, isMobile }) => {
