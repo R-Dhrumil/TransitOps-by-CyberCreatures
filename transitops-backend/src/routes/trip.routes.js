@@ -9,7 +9,7 @@ const AppError = require('../utils/AppError');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
 const { tripSchema, tripCompleteSchema, incidentSchema } = require('../validators/schemas');
-const { notifyRole } = require('../services/notification.service');
+const { notifyRole, notifyAllExceptRole } = require('../services/notification.service');
 
 // GET /api/trips
 router.get('/', authenticate, asyncHandler(async (req, res) => {
@@ -215,6 +215,8 @@ router.post('/:id/incidents', authenticate, validate(incidentSchema), asyncHandl
     VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *
   `, [req.params.id, req.user.id, incident_type, location, photo_url, comments]);
+
+  await notifyAllExceptRole('driver', 'New Incident Reported', `A new ${incident_type} incident was reported on Trip #${req.params.id}.`, 'warning', `/trips`);
 
   res.status(201).json({ success: true, data: rows[0] });
 }));

@@ -7,24 +7,23 @@ import { useNotifications } from '../../hooks/useNotifications.js';
 import styles from './Navbar.module.css';
 
 const PAGE_TITLES = {
-  '/dashboard':     'Dashboard',
-  '/vehicles':      'Vehicle Registry',
-  '/drivers':       'Driver Management',
-  '/trips':         'Trip Management',
-  '/trips/new':     'New Trip',
-  '/maintenance':   'Maintenance',
+  '/dashboard': 'Dashboard',
+  '/vehicles': 'Vehicle Registry',
+  '/drivers': 'Driver Management',
+  '/trips': 'Trip Management',
+  '/trips/new': 'New Trip',
+  '/maintenance': 'Maintenance',
   '/fuel-expenses': 'Fuel & Expenses',
-  '/reports':       'Reports & Analytics',
+  '/reports': 'Reports & Analytics',
 };
 
 const Navbar = ({ onMenuToggle }) => {
   const { user } = useAuth();
   const location = useLocation();
-  const title = PAGE_TITLES[location.pathname] || 'TransitOps';
-
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const notifRef = useRef(null);
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -36,14 +35,41 @@ const Navbar = ({ onMenuToggle }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const title = PAGE_TITLES[location.pathname] || 'TransitOps';
+
   return (
     <header className={styles.navbar}>
+      {/* Left — Search bar */}
       <div className={styles.left}>
         <button className={styles.menuBtn} onClick={onMenuToggle} aria-label="Toggle menu">
           <AppIcon name="menu" size={18} />
         </button>
-        <h1 className={styles.pageTitle}>{title}</h1>
+
+        <div className={styles.searchWrapper}>
+          <svg
+            className={styles.searchIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+            className={styles.searchInput}
+            placeholder="Search operations..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Search operations"
+          />
+        </div>
       </div>
+
+      {/* Right — Actions + Avatar */}
       <div className={styles.right}>
         <div className={styles.notifContainer} ref={notifRef}>
           <button 
@@ -54,11 +80,12 @@ const Navbar = ({ onMenuToggle }) => {
             <AppIcon name="bell" size={20} />
             {unreadCount > 0 && <span className={styles.notifBadge}>{unreadCount}</span>}
           </button>
+          
           {showNotifications && (
             <NotificationDropdown 
-              notifications={notifications}
-              onMarkAsRead={markAsRead}
-              onMarkAllAsRead={markAllAsRead}
+              notifications={notifications || []} 
+              onMarkAsRead={markAsRead} 
+              onMarkAllAsRead={markAllAsRead} 
               onClose={() => setShowNotifications(false)}
             />
           )}

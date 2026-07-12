@@ -17,7 +17,7 @@
   transition: all var(--transition-fast);
 }
 .reportTab:hover { background: var(--color-bg-hover); color: var(--color-text-primary); }
-.activeTab { background: var(--color-brand-glow); color: var(--color-brand-light); border-color: rgba(14,165,233,0.3); }
+.activeTab { background: var(--color-brand-glow); color: var(--color-brand-light); border-color: rgba(194, 199, 206, 0.2); }
 
 .chartSection {
   background: var(--color-bg-card);
