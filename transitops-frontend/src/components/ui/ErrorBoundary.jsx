@@ -1,11 +1,15 @@
 import React from 'react';
-import styles from './ErrorBoundary.module.css';
+import ErrorPage from '../../pages/ErrorPage.jsx';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false, error: null };
   }
+
+  handleReset = () => {
+    this.setState({ hasError: false, error: null });
+  };
 
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
@@ -18,16 +22,15 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className={styles.container}>
-          <div className={styles.card}>
-            <span className={styles.icon}>⚠️</span>
-            <h2>Something went wrong</h2>
-            <p>An unexpected error occurred. Please refresh the page.</p>
-            <button className={styles.btn} onClick={() => window.location.reload()}>
-              Refresh Page
-            </button>
-          </div>
-        </div>
+        <ErrorPage
+          title="Something went wrong"
+          message="The app hit an unexpected error and could not continue."
+          detail={this.state.error?.message}
+          primaryActionLabel="Try again"
+          primaryAction={this.handleReset}
+          secondaryActionLabel="Refresh page"
+          secondaryAction={() => window.location.reload()}
+        />
       );
     }
     return this.props.children;
