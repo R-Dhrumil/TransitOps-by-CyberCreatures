@@ -9,6 +9,7 @@ const AppError = require('../utils/AppError');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
 const { tripSchema, tripCompleteSchema, incidentSchema } = require('../validators/schemas');
+const { notifyRole } = require('../services/notification.service');
 
 // GET /api/trips
 router.get('/', authenticate, asyncHandler(async (req, res) => {
@@ -85,6 +86,8 @@ router.post('/', authenticate, requireRole('driver', 'fleet_manager', 'dispatche
     [source, destination, vehicle_id, driver_id, cargo_weight, planned_distance, req.user.id]
   );
 
+  await notifyRole('fleet_manager', 'New Trip Created', `A new trip from ${source} to ${destination} was drafted.`, 'info', '/trips');
+
   res.status(201).json({ success: true, data: rows[0] });
 }));
 
@@ -123,6 +126,8 @@ router.patch('/:id/dispatch', authenticate, requireRole('driver', 'fleet_manager
     const { rows } = await client.query('SELECT * FROM trips WHERE id = $1', [trip.id]);
     return rows[0];
   });
+
+  await notifyRole('fleet_manager', 'Trip Dispatched', `Trip to ${result.destination} has been dispatched.`, 'success', '/trips');
 
   res.json({ success: true, data: result });
 }));
@@ -165,6 +170,8 @@ router.patch('/:id/complete', authenticate, requireRole('driver', 'fleet_manager
     const { rows } = await client.query('SELECT * FROM trips WHERE id = $1', [trip.id]);
     return rows[0];
   });
+
+  await notifyRole('fleet_manager', 'Trip Completed', `Trip to ${result.destination} has been completed.`, 'success', '/trips');
 
   res.json({ success: true, data: result });
 }));

@@ -33,6 +33,40 @@
   color: var(--color-text-primary);
 }
 .right { display: flex; align-items: center; gap: var(--space-4); }
+.notifContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.notifBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.notifBtn:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+.notifBadge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--color-brand);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  transform: translate(25%, -25%);
+  border: 2px solid rgba(10, 15, 30, 0.85);
+}
 .userChip {
   display: flex;
   align-items: center;
