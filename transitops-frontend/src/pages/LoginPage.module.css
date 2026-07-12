@@ -237,3 +237,25 @@
 .accessScoped li {
   margin-bottom: 0.25rem;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  .leftPanel {
+    width: 100%;
+    padding: 2rem;
+  }
+  .tagline {
+    margin-bottom: 1rem;
+  }
+  .rolesTitle, .rolesList, .footer {
+    display: none;
+  }
+  .rightPanel {
+    width: 100%;
+    padding: 2rem;
+    align-items: flex-start;
+  }
+}
