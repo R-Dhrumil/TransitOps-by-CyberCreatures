@@ -7,6 +7,7 @@ import styles from './AppLayout.module.css';
 const AppLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -27,7 +28,11 @@ const AppLayout = () => {
       )}
       <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} isMobile={isMobile} />
       <div className={styles.main}>
-        <Navbar onMenuToggle={toggleSidebar} />
+        <Navbar 
+          onMenuToggle={toggleSidebar}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
         <main className={styles.content}>
           <Outlet context={{ searchQuery }} />
         </main>
