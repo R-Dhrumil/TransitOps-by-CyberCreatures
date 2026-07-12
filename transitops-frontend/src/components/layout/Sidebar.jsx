@@ -3,14 +3,14 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import AppIcon from '../ui/AppIcon.jsx';
 import styles from './Sidebar.module.css';
-import logoImg from '../../assets/logo.svg';
+
 
 const NAV_ITEMS = [
   { path: '/dashboard',      label: 'Dashboard',      icon: 'dashboard', roles: [] },
   { path: '/vehicles',       label: 'Vehicles',       icon: 'vehicle', roles: [] },
   { path: '/drivers',        label: 'Drivers',        icon: 'users', roles: [] },
   { path: '/trips',          label: 'Trips',          icon: 'route', roles: [] },
-  { path: '/quick-report',   label: 'Quick Report',   icon: 'alert', roles: [] },
+  { path: '/quick-report',   label: 'Quick Report',   icon: 'alert', roles: ['driver'] },
   { path: '/maintenance',    label: 'Maintenance',    icon: 'maintenance', roles: ['fleet_manager'] },
   { path: '/fuel-expenses',  label: 'Fuel & Expenses', icon: 'fuel', roles: ['driver', 'fleet_manager', 'financial_analyst'] },
   { path: '/reports',        label: 'Reports',        icon: 'reports', roles: ['fleet_manager', 'financial_analyst', 'safety_officer'] },
@@ -35,7 +35,7 @@ const Sidebar = ({ collapsed, onToggle, isMobile }) => {
         {collapsed && !isMobile ? (
           <span className={styles.logo}><AppIcon name="bus" size={22} /></span>
         ) : (
-          <img src={logoImg} alt="TransitOps" style={{ maxHeight: '32px', width: 'auto', objectFit: 'contain' }} />
+          <img src="/logo.svg" alt="TransitOps" style={{ maxHeight: '32px', width: 'auto', objectFit: 'contain' }} />
         )}
       </div>
 
