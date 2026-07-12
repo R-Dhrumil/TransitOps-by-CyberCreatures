@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDashboard } from '../hooks/useDashboard.js';
+import { useTrips } from '../hooks/useTrips.js';
 import KpiCard from '../components/ui/KpiCard.jsx';
 import styles from './DashboardPage.module.css';
 
@@ -16,8 +17,8 @@ const DashboardPage = () => {
   if (dashLoading || tripsLoading) return (
     <div className="loading-state"><div className="spinner" /><span>Loading dashboard…</span></div>
   );
-  if (error) return (
-    <div className="empty-state"><span>⚠️</span><p>Failed to load dashboard. <button className="btn btn-secondary btn-sm" onClick={refetch}>Retry</button></p></div>
+  if (dashError || tripsError) return (
+    <div className="empty-state"><span>⚠️</span><p>Failed to load dashboard. <button className="btn btn-secondary btn-sm" onClick={handleRefresh}>Retry</button></p></div>
   );
 
   const v = dashboardData?.vehicles || {};
@@ -30,7 +31,7 @@ const DashboardPage = () => {
     <div className={styles.page}>
       <div className="page-header">
         <h2>Overview</h2>
-        <button className="btn btn-secondary btn-sm" onClick={refetch}>↻ Refresh</button>
+        <button className="btn btn-secondary btn-sm" onClick={handleRefresh}>↻ Refresh</button>
       </div>
 
       {/* Vehicle KPIs */}
@@ -70,11 +71,11 @@ const DashboardPage = () => {
       <section className={styles.section}>
         <h3 className={styles.sectionLabel}>📊 Fleet Utilization</h3>
         <div className={styles.utilizationCard}>
-          <div className={styles.utilizationValue}>{data?.fleet_utilization_percent ?? 0}%</div>
+          <div className={styles.utilizationValue}>{dashboardData?.fleet_utilization_percent ?? 0}%</div>
           <div className={styles.utilizationBar}>
             <div
               className={styles.utilizationFill}
-              style={{ width: `${data?.fleet_utilization_percent ?? 0}%` }}
+              style={{ width: `${dashboardData?.fleet_utilization_percent ?? 0}%` }}
             />
           </div>
 
@@ -82,8 +83,8 @@ const DashboardPage = () => {
             VIEW FULL REPORT →
           </Link>
         </div>
+      </section>
     </div>
-    </div >
   );
 };
 
