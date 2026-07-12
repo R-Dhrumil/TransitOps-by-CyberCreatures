@@ -15,8 +15,7 @@ const loginSchema = z.object({
 const DEMO_ACCOUNTS = [
   { role: 'Fleet Manager',      email: 'manager@transitops.dev',  password: 'Manager@123' },
   { role: 'Dispatcher',         email: 'dispatcher@transitops.dev',password: 'Dispatcher@123' },
-  { role: 'Driver (Email)',     email: 'driver@transitops.dev',    password: 'Driver@123' },
-  { role: 'Driver (Phone)',     email: '9876543210',               password: 'Driver@123' },
+  { role: 'Driver',             email: '9876543210',               password: 'Driver@123' },
   { role: 'Safety Officer',     email: 'safety@transitops.dev',   password: 'Safety@123' },
   { role: 'Financial Analyst',  email: 'finance@transitops.dev',  password: 'Finance@123' },
 ];
