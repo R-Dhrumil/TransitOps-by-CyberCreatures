@@ -286,3 +286,30 @@
   from { opacity: 0; transform: translateY(30px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+@media (max-width: 768px) {
+  .page {
+    padding: 0;
+    align-items: flex-start;
+  }
+  .container {
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    padding: var(--space-5) var(--space-4);
+    min-height: 100vh;
+  }
+  .hugeInput {
+    font-size: 1.5rem;
+    padding: var(--space-3);
+  }
+  .incidentGrid {
+    grid-template-columns: 1fr;
+  }
+  .formActions {
+    grid-template-columns: 1fr;
+  }
+  .successSection {
+    padding: var(--space-4) 0;
+  }
+}
