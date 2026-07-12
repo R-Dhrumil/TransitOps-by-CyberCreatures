@@ -24,7 +24,12 @@ const LandingPage = () => (
     {/* Nav */}
     <nav className={styles.nav}>
       <div className={styles.navBrand}><AppIcon name="bus" size={22} /> <span>TransitOps</span></div>
-      <Link to="/login" className="btn btn-primary">Sign In <AppIcon name="arrowRight" size={14} /></Link>
+      <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+        <Link to="/quick-report" className="btn btn-secondary" style={{ borderColor: '#f59e0b', color: '#f59e0b' }}>
+          🚨 Quick Report
+        </Link>
+        <Link to="/login" className="btn btn-primary">Sign In <AppIcon name="arrowRight" size={14} /></Link>
+      </div>
     </nav>
 
     {/* Hero */}
@@ -41,6 +46,9 @@ const LandingPage = () => (
       </p>
       <div className={styles.heroActions}>
         <Link to="/login" className="btn btn-primary">Get Started Free <AppIcon name="arrowRight" size={14} /></Link>
+        <Link to="/quick-report" className="btn btn-secondary" style={{ borderColor: '#f59e0b', color: '#f59e0b' }}>
+          🚨 Driver Quick Report / ड्राइवर तुरंत रिपोर्ट
+        </Link>
         <a href="#features" className="btn btn-secondary">See Features</a>
       </div>
       <div className={styles.heroStats}>

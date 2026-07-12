@@ -356,7 +356,7 @@ const TripsPage = () => {
                         </span>
                       </div>
                       <div className={styles.timelineBody}>
-                        <p style={{ margin: 0 }}><strong>Reported By:</strong> {inc.reporter_name || 'System'}</p>
+                        <p style={{ margin: 0 }}><strong>Reported By:</strong> {inc.reporter_name || 'Driver Quick Portal'}</p>
                         {inc.comments && <p style={{ margin: 'var(--space-1) 0 0 0' }}>{inc.comments}</p>}
                         {inc.location && (
                           <div className={styles.timelineLocation}>

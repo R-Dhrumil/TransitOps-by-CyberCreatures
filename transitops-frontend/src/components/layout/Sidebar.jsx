@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { path: '/vehicles',       label: 'Vehicles',       icon: 'vehicle', roles: [] },
   { path: '/drivers',        label: 'Drivers',        icon: 'users', roles: [] },
   { path: '/trips',          label: 'Trips',          icon: 'route', roles: [] },
+  { path: '/quick-report',   label: 'Quick Report',   icon: 'alert', roles: [] },
   { path: '/maintenance',    label: 'Maintenance',    icon: 'maintenance', roles: ['fleet_manager'] },
   { path: '/fuel-expenses',  label: 'Fuel & Expenses', icon: 'fuel', roles: ['driver', 'fleet_manager', 'financial_analyst'] },
   { path: '/reports',        label: 'Reports',        icon: 'reports', roles: ['fleet_manager', 'financial_analyst', 'safety_officer'] },

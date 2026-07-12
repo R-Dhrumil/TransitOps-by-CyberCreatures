@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -134,6 +134,30 @@ const LoginPage = () => {
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: '#64748b' }}>
+              <div style={{ flex: 1, height: '1px', backgroundColor: '#2d3748' }}></div>
+              <span style={{ padding: '0 10px', fontSize: '0.8rem', color: '#94a3b8' }}>OR / या</span>
+              <div style={{ flex: 1, height: '1px', backgroundColor: '#2d3748' }}></div>
+            </div>
+
+            <Link
+              to="/quick-report"
+              style={{
+                display: 'block',
+                textAlign: 'center',
+                padding: '12px',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.15))',
+                border: '1px dashed #f59e0b',
+                color: '#f59e0b',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                textDecoration: 'none',
+              }}
+            >
+              🚧 Driver Quick Report / ड्राइवर तुरंत रिपोर्ट दर्ज करें
+            </Link>
           </form>
 
           <div className={styles.accessScoped}>
