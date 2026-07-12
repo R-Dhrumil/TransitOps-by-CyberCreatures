@@ -9,6 +9,13 @@ const AppLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Touch gesture states
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  // Minimum swipe distance (in px) to register a swipe
+  const minSwipeDistance = 50;
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     handleResize(); // Init
@@ -21,8 +28,39 @@ const AppLayout = () => {
     if (isMobile) setSidebarCollapsed(true);
   };
 
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    // Swipe left to close
+    if (isLeftSwipe && !sidebarCollapsed && isMobile) {
+      setSidebarCollapsed(true);
+    }
+    
+    // Swipe right to open (only if started near the left edge)
+    if (isRightSwipe && sidebarCollapsed && isMobile && touchStart < 50) {
+      setSidebarCollapsed(false);
+    }
+  };
+
   return (
-    <div className={`${styles.layout} ${sidebarCollapsed ? styles.collapsed : ''} ${isMobile ? styles.isMobile : ''}`}>
+    <div 
+      className={`${styles.layout} ${sidebarCollapsed ? styles.collapsed : ''} ${isMobile ? styles.isMobile : ''}`}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {isMobile && !sidebarCollapsed && (
         <div className={styles.backdrop} onClick={closeSidebar}></div>
       )}
