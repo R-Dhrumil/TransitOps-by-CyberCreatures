@@ -1,0 +1,115 @@
+.customSelect {
+  position: relative;
+  width: auto;
+  min-width: 140px;
+  font-family: inherit;
+  user-select: none;
+}
+
+.selectTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.selectTrigger:hover {
+  border-color: var(--color-border-light);
+}
+
+.selectTrigger.open {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--color-brand-glow);
+}
+
+.label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-muted);
+  transition: transform 0.2s ease;
+}
+
+.open .iconWrapper {
+  transform: rotate(180deg);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  animation: fadeInDown 0.15s ease-out;
+  padding: 4px;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.option:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.option.selected {
+  background-color: var(--color-brand-glow);
+  color: var(--color-brand-light);
+  font-weight: 500;
+}
+
+.checkIcon {
+  color: var(--color-brand-light);
+}
+
+/* Scrollbar styles for the dropdown menu */
+.dropdownMenu::-webkit-scrollbar {
+  width: 6px;
+}
+.dropdownMenu::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dropdownMenu::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 10px;
+}
+.dropdownMenu::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-muted);
+}

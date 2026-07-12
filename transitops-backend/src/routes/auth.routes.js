@@ -36,11 +36,11 @@ router.post('/login', validate(loginSchema), asyncHandler(async (req, res) => {
   const { email, password } = req.validatedBody;
 
   const { rows } = await pool.query(
-    'SELECT id, email, password_hash, full_name, role FROM users WHERE email = $1',
+    'SELECT id, email, phone, password_hash, full_name, role FROM users WHERE email = $1 OR phone = $1',
     [email]
   );
   if (rows.length === 0) {
-    throw new AppError('Invalid email or password.', 401, 'INVALID_CREDENTIALS');
+    throw new AppError('Invalid credentials.', 401, 'INVALID_CREDENTIALS');
   }
 
   const user = rows[0];

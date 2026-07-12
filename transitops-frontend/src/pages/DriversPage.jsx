@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
 import apiClient from '../lib/apiClient.js';
 import AppIcon from '../components/ui/AppIcon.jsx';
+import CustomSelect from '../components/ui/CustomSelect.jsx';
 
 const driverSchema = z.object({
   name: z.string().min(2, 'Min 2 characters'),
@@ -74,10 +75,17 @@ const DriversPage = () => {
       </div>
 
       <div className="filters-bar">
-        <select className="form-select" value={filters.status} onChange={(e) => setFilters({ status: e.target.value })}>
-          <option value="">All Statuses</option>
-          <option>Available</option><option>On Trip</option><option>Off Duty</option><option>Suspended</option>
-        </select>
+        <CustomSelect 
+          value={filters.status} 
+          onChange={(val) => setFilters({ status: val })}
+          options={[
+            { label: 'All Statuses', value: '' },
+            { label: 'Available', value: 'Available' },
+            { label: 'On Trip', value: 'On Trip' },
+            { label: 'Off Duty', value: 'Off Duty' },
+            { label: 'Suspended', value: 'Suspended' }
+          ]}
+        />
         <button className="btn btn-secondary btn-sm" onClick={() => setFilters({ status: '' })}>Clear</button>
       </div>
 

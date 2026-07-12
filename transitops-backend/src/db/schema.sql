@@ -34,6 +34,7 @@ EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 CREATE TABLE IF NOT EXISTS users (
   id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email          TEXT UNIQUE NOT NULL,
+  phone          TEXT UNIQUE,
   password_hash  TEXT NOT NULL,
   full_name      TEXT NOT NULL,
   role           user_role NOT NULL,
@@ -121,6 +122,18 @@ CREATE TABLE IF NOT EXISTS expenses (
   created_at   TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- ── Notifications ──────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS notifications (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     UUID REFERENCES users(id) ON DELETE CASCADE,
+  title       TEXT NOT NULL,
+  message     TEXT NOT NULL,
+  type        TEXT NOT NULL DEFAULT 'info',
+  is_read     BOOLEAN DEFAULT FALSE,
+  link        TEXT,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ── Indexes ───────────────────────────────────────────────────
 CREATE INDEX IF NOT EXISTS idx_vehicles_status ON vehicles(status);
 CREATE INDEX IF NOT EXISTS idx_drivers_status  ON drivers(status);
@@ -129,6 +142,8 @@ CREATE INDEX IF NOT EXISTS idx_trips_vehicle   ON trips(vehicle_id);
 CREATE INDEX IF NOT EXISTS idx_trips_driver    ON trips(driver_id);
 CREATE INDEX IF NOT EXISTS idx_fuel_vehicle    ON fuel_logs(vehicle_id);
 CREATE INDEX IF NOT EXISTS idx_maintenance_vehicle ON maintenance_logs(vehicle_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON notifications(is_read);
 
 -- ── Updated_at trigger function ───────────────────────────────
 CREATE OR REPLACE FUNCTION update_updated_at_column()

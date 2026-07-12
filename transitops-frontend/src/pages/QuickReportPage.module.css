@@ -1,0 +1,288 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top right, rgba(14, 165, 233, 0.15), transparent 40%),
+              radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.1), transparent 45%),
+              #0a0f1e;
+  padding: var(--space-4);
+  font-family: var(--font-family);
+}
+
+.container {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(17, 24, 39, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(30, 41, 59, 0.7);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(14, 165, 233, 0.08);
+  padding: var(--space-6);
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-4);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, var(--color-brand), var(--color-brand-dark));
+  color: white;
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--space-3);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+/* Step 0: Search */
+.searchSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.searchLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hindiText {
+  font-size: var(--font-size-xs);
+  color: var(--color-brand-light);
+  font-weight: 400;
+}
+
+.hugeInput {
+  font-size: var(--font-size-xl);
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border-light);
+  background: rgba(30, 41, 59, 0.4);
+}
+
+.hugeInput:focus {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 4px var(--color-brand-glow);
+}
+
+.searchBtn {
+  padding: var(--space-4);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  width: 100%;
+}
+
+.portalLink {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  margin-top: var(--space-2);
+}
+
+/* Step 1: Form */
+.tripInfoCard {
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+}
+
+.infoLabel {
+  color: var(--color-text-muted);
+}
+
+.infoVal {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Incident Grid */
+.incidentGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.incidentCard {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.incidentCard:hover {
+  border-color: var(--color-brand-light);
+  transform: translateY(-2px);
+  background: var(--color-bg-hover);
+}
+
+.incidentCard.selected {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: var(--color-brand);
+  box-shadow: 0 0 16px var(--color-brand-glow);
+}
+
+.emoji {
+  font-size: 1.75rem;
+}
+
+.cardName {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.cardHindiName {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+/* GPS button */
+.gpsContainer {
+  margin-bottom: var(--space-5);
+}
+
+.gpsBtn {
+  width: 100%;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-info-bg);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--color-brand-light);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.gpsBtn:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.gpsCoords {
+  font-size: var(--font-size-xs);
+  color: var(--color-success);
+  margin-top: 4px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Actions */
+.formActions {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* Success page */
+.successSection {
+  text-align: center;
+  padding: var(--space-6) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.successIcon {
+  width: 64px;
+  height: 64px;
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-2);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+}
+
+.successTitle {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+.successHindi {
+  font-size: var(--font-size-md);
+  color: var(--color-brand-light);
+  margin-top: -8px;
+}
+
+.successMsg {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

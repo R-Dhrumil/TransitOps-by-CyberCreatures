@@ -45,6 +45,7 @@ const TripWizard         = lazyWithRetry(() => import('./pages/TripWizard.jsx'),
 const MaintenancePage    = lazyWithRetry(() => import('./pages/MaintenancePage.jsx'), 'maintenance');
 const FuelExpensesPage   = lazyWithRetry(() => import('./pages/FuelExpensesPage.jsx'), 'fuel-expenses');
 const ReportsPage        = lazyWithRetry(() => import('./pages/ReportsPage.jsx'), 'reports');
+const QuickReportPage    = lazyWithRetry(() => import('./pages/QuickReportPage.jsx'), 'quick-report');
 const NotFoundPage       = lazyWithRetry(() => import('./pages/NotFoundPage.jsx'), 'not-found');
 
 export default function App() {
@@ -57,6 +58,7 @@ export default function App() {
               {/* Public routes */}
               <Route path="/"       element={<LandingPage />} />
               <Route path="/login"  element={<LoginPage />} />
+              <Route path="/quick-report" element={<QuickReportPage />} />
 
               {/* Protected routes — all rendered inside AppLayout (sidebar + navbar) */}
               <Route element={<ProtectedRoute />}>

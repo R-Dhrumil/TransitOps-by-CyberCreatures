@@ -9,6 +9,7 @@ import StatusBadge from '../components/ui/StatusBadge.jsx';
 import apiClient from '../lib/apiClient.js';
 import AppIcon from '../components/ui/AppIcon.jsx';
 import ConfirmModal from '../components/ui/ConfirmModal.jsx';
+import CustomSelect from '../components/ui/CustomSelect.jsx';
 
 const vehicleSchema = z.object({
   registration_number: z.string().min(1, 'Required'),
@@ -84,14 +85,25 @@ const VehiclesPage = () => {
 
       {/* Filters */}
       <div className="filters-bar">
-        <select className="form-select" value={filters.status} onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}>
-          <option value="">All Statuses</option>
-          <option>Available</option><option>On Trip</option><option>In Shop</option><option>Retired</option>
-        </select>
-        <select className="form-select" value={filters.type} onChange={(e) => setFilters((f) => ({ ...f, type: e.target.value }))}>
-          <option value="">All Types</option>
-          {VEHICLE_TYPES.map((t) => <option key={t}>{t}</option>)}
-        </select>
+        <CustomSelect 
+          value={filters.status} 
+          onChange={(val) => setFilters((f) => ({ ...f, status: val }))}
+          options={[
+            { label: 'All Statuses', value: '' },
+            { label: 'Available', value: 'Available' },
+            { label: 'On Trip', value: 'On Trip' },
+            { label: 'In Shop', value: 'In Shop' },
+            { label: 'Retired', value: 'Retired' }
+          ]}
+        />
+        <CustomSelect 
+          value={filters.type} 
+          onChange={(val) => setFilters((f) => ({ ...f, type: val }))}
+          options={[
+            { label: 'All Types', value: '' },
+            ...VEHICLE_TYPES.map(t => ({ label: t, value: t }))
+          ]}
+        />
         <input className="form-input" placeholder="Region…" value={filters.region} onChange={(e) => setFilters((f) => ({ ...f, region: e.target.value }))} />
         <button className="btn btn-secondary btn-sm" onClick={() => setFilters({ status: '', type: '', region: '' })}>Clear</button>
       </div>
