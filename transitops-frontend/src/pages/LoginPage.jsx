@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext.jsx';
+import AppIcon from '../components/ui/AppIcon.jsx';
 import styles from './LoginPage.module.css';
 
 
@@ -26,6 +27,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm({
     resolver: zodResolver(loginSchema),
@@ -100,14 +102,39 @@ const LoginPage = () => {
 
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="password">Password</label>
-              <input
-                id="password"
-                type="password"
-                className={styles.input}
-                placeholder="••••••••"
-                autoComplete="current-password"
-                {...register('password')}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  className={styles.input}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  {...register('password')}
+                  style={{ paddingRight: '40px', width: '100%' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--color-text-muted)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4px'
+                  }}
+                  tabIndex="-1"
+                  aria-label="Toggle password visibility"
+                >
+                  <AppIcon name={showPassword ? 'eyeOff' : 'eye'} size={18} />
+                </button>
+              </div>
               {errors.password && <span style={{ color: '#fc8181', fontSize: '0.8rem', marginTop: '4px' }}>{errors.password.message}</span>}
             </div>
 
